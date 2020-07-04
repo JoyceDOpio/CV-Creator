@@ -15,12 +15,10 @@ public class Panel_References extends Panel_Data
 	JTextField reference;
 	JButton addReferenceButton;
 	
-	GridBagConstraints gc, savedReferencesSubPanelgc, enterDataSubPanelgc;
+	GridBagConstraints enterDataSubPanelgc;
 	// Inner panel for organizing references layout
 	JPanel savedReferencesPanel, enterDataPanel;
 	ArrayList<String> references;
-
-	HashMap<JTextField, JButton> refFields;
 	
 	Panel_References()
 	{
@@ -29,7 +27,6 @@ public class Panel_References extends Panel_Data
 		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 
 		references = new ArrayList<String>();
-		refFields = new HashMap<JTextField, JButton>();
 
 		reference = new JTextField();
 		addReferenceButton = new JButtonStyle("Dodaj referencję");
@@ -39,17 +36,15 @@ public class Panel_References extends Panel_Data
 		
 		// Inner panels for:
 		// - saved references
-		savedReferencesPanel = new JPanel();
-		savedReferencesPanel.setLayout(new GridBagLayout());
-		savedReferencesSubPanelgc = new GridBagConstraints();
-		// Insets create indents - 5 pixels from bottom and from
-		// the right side
-		savedReferencesSubPanelgc.insets = new Insets(0, 5, 5, 5);
-		savedReferencesSubPanelgc.weightx = 100;
-		savedReferencesSubPanelgc.weighty = 1;
-		savedReferencesSubPanelgc.gridx = 0;
-		savedReferencesSubPanelgc.gridy = 0;
-		savedReferencesSubPanelgc.gridwidth = 1;
+		savedReferencesPanel = new Panel_SavedStrings()
+		{
+			@Override
+			public void removeObject(JTextField field)
+			{
+				// Remove reference
+				references.remove(field.getText());
+			}
+		};
 		add(savedReferencesPanel);
 		// - for entering data
 		enterDataPanel = new JPanel();
@@ -68,50 +63,6 @@ public class Panel_References extends Panel_Data
 		placeElementsInPanel(enterDataPanel, enterDataSubPanelgc);
 	}
 
-	// A:
-	public void addReferenceToPanel(String text)
-	{
-		savedReferencesSubPanelgc.fill = GridBagConstraints.HORIZONTAL;
-		savedReferencesSubPanelgc.anchor = GridBagConstraints.FIRST_LINE_START;
-		savedReferencesSubPanelgc.gridx = 0;
-		savedReferencesSubPanelgc.gridy++;
-
-		final JTextField referenceField = new JTextFieldStyle(text);
-		// If the text is longer than the text field, the text fields shows the
-		// beginning of the text
-		referenceField.setCaretPosition(0);
-		// Specifies how many columne the text field will occupy
-		referenceField.setColumns(2);
-		savedReferencesPanel.add(referenceField, savedReferencesSubPanelgc);
-
-		savedReferencesSubPanelgc.gridx = 1;
-
-		final JButton removeButton = new JButtonStyle("Usuń");
-
-		removeButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				removeReference(referenceField, removeButton);
-			}
-		});
-		savedReferencesSubPanelgc.weightx = 1;
-		savedReferencesSubPanelgc.weighty = 100;
-
-		savedReferencesSubPanelgc.fill = GridBagConstraints.VERTICAL;
-		savedReferencesSubPanelgc.anchor = GridBagConstraints.FIRST_LINE_END;
-
-		savedReferencesPanel.add(removeButton, savedReferencesSubPanelgc);
-		// Repaint the panel
-		savedReferencesPanel.revalidate();  // For JDK 1.7 or above.
-		savedReferencesPanel.repaint();
-
-		// Add the duty field and it's removal button to the
-		// hash map <-- this will enable us later to remove them
-		//              all at once
-		refFields.put(referenceField, removeButton);
-	}
-
 	// C:
 	public void clearEnterDataPanel()
 	{
@@ -122,23 +73,8 @@ public class Panel_References extends Panel_Data
 	public void clearPanel()
 	{
 		clearEnterDataPanel();
-		clearSavedReferencePanel();
-	}
-
-	public void clearSavedReferencePanel()
-	{
-		for(HashMap.Entry<JTextField, JButton> entry : refFields.entrySet())
-		{
-			// Remove components from the panel for saved references
-			savedReferencesPanel.remove(entry.getKey());
-			savedReferencesPanel.remove(entry.getValue());
-		}
-		refFields.clear();
 		references.clear();
-
-		// Repaint the panel
-		savedReferencesPanel.revalidate();
-		savedReferencesPanel.repaint();
+		((Panel_SavedStrings) savedReferencesPanel).clearPanel();
 	}
 
 	public ArrayList<String> collectInformation()
@@ -156,7 +92,7 @@ public class Panel_References extends Panel_Data
 
 		for(String ref : references)
 		{
-			addReferenceToPanel(ref);
+			((Panel_SavedStrings) savedReferencesPanel).addStringRepresentationToPanel(ref);
 		}
 	}
 
@@ -205,7 +141,7 @@ public class Panel_References extends Panel_Data
 				{
 					references.add(reference.getText());
 					// Add reference representation to the panel
-					addReferenceToPanel(reference.getText());
+					((Panel_SavedStrings) savedReferencesPanel).addStringRepresentationToPanel(reference.getText());
 
 					clearEnterDataPanel();
 				}
@@ -215,18 +151,5 @@ public class Panel_References extends Panel_Data
 				}
 			}
 		});
-	}
-
-	// R:
-	public void removeReference(JTextField field, JButton button)
-	{
-		// Remove duty
-		references.remove(field.getText());
-		// Remove components
-		savedReferencesPanel.remove(field);
-		savedReferencesPanel.remove(button);
-		// Repaint the panel
-		savedReferencesPanel.revalidate();
-		savedReferencesPanel.repaint();
 	}
 }

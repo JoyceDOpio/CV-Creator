@@ -13,11 +13,10 @@ public class Panel_Skills extends Panel_Data
 	JTextArea description;
 	JButton addSkillButton;
 	
-	GridBagConstraints gc, savedSkillsSubPanelgc, enterDataSubPanelgc;
+	GridBagConstraints enterDataSubPanelgc;
 	// Inner panel for organizing skills layout
 	JPanel savedSkillsPanel, enterDataPanel;
 	HashMap<String, String> skills;
-	HashMap<JTextField, JButton> skillFields;
 	
 	Panel_Skills()
 	{
@@ -26,7 +25,6 @@ public class Panel_Skills extends Panel_Data
 		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 
 		skills = new HashMap<String, String>();
-		skillFields = new HashMap<JTextField, JButton>();
 
 		// GUI components
 		skillsLabel = new JLabelStyle("Umiejętność");
@@ -46,20 +44,17 @@ public class Panel_Skills extends Panel_Data
 		
 		// Inner panels for:
 		// - saved skills
-		savedSkillsPanel = new JPanel();
-		savedSkillsPanel.setLayout(new GridBagLayout());
-		savedSkillsSubPanelgc = new GridBagConstraints();
-		// Insets create indents - 5 pixels from bottom and from
-		// the right side
-		savedSkillsSubPanelgc.insets = new Insets(0, 5, 0, 5);
-		savedSkillsSubPanelgc.weightx = 100;
-		savedSkillsSubPanelgc.weighty = 1;
-		savedSkillsSubPanelgc.gridx = 0;
-		savedSkillsSubPanelgc.gridy = 0;
-		savedSkillsSubPanelgc.gridwidth = 1;
-//		add(savedSkillsPanel, gc);
+		savedSkillsPanel = new Panel_SavedStrings()
+		{
+			@Override
+			public void removeObject(JTextField field)
+			{
+				// Remove skill
+				skills.remove(field.getText());
+			}
+		};
 		add(savedSkillsPanel);
-		// entering data
+		// - entering data
 		enterDataPanel = new JPanel();
 		enterDataPanel.setLayout(new GridBagLayout());
 		enterDataSubPanelgc = new GridBagConstraints();
@@ -71,58 +66,9 @@ public class Panel_Skills extends Panel_Data
 		enterDataSubPanelgc.gridx = 0;
 		enterDataSubPanelgc.gridy = 0;
 		enterDataSubPanelgc.gridwidth = 1;
-//		add(savedSkillsPanel, gc);
 		add(enterDataPanel);
-		// Place in the sub-panel the GUI elements for enetering data
+		// Place in the sub-panel the GUI elements for entering data
 		placeElementsInPanel(enterDataPanel, enterDataSubPanelgc);
-	}
-
-	// A:
-	public void addSkillToPanel(String text)
-	{
-		savedSkillsSubPanelgc.fill = GridBagConstraints.HORIZONTAL;
-		savedSkillsSubPanelgc.anchor = GridBagConstraints.FIRST_LINE_START;
-		savedSkillsSubPanelgc.gridx = 0;
-		savedSkillsSubPanelgc.gridy++;
-
-		final JTextField skillField = new JTextFieldStyle(text);
-		// If the text is longer than the text field, the text fields shows the
-		// beginning of the text
-		skillField.setCaretPosition(0);
-		// Specifies how many columne the text field will occupy
-		skillField.setColumns(2);
-		savedSkillsPanel.add(skillField, savedSkillsSubPanelgc);
-
-//		savedSkillsSubPanelgc.gridwidth = 1;
-
-
-		final JButton removeButton = new JButtonStyle("Usuń");
-
-		removeButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				removeSkill(skillField, removeButton);
-			}
-		});
-
-		savedSkillsSubPanelgc.gridx = 1;
-
-		savedSkillsSubPanelgc.weightx = 1;
-		savedSkillsSubPanelgc.weighty = 100;
-
-		savedSkillsSubPanelgc.fill = GridBagConstraints.VERTICAL;
-		savedSkillsSubPanelgc.anchor = GridBagConstraints.FIRST_LINE_END;
-
-		savedSkillsPanel.add(removeButton, savedSkillsSubPanelgc);
-		// Repaint the panel
-		savedSkillsPanel.revalidate();  // For JDK 1.7 or above.
-		savedSkillsPanel.repaint();
-
-		// Add the duty field and it's removal button to the
-		// hash map <-- this will enable us later to remove them
-		//              all at once
-		skillFields.put(skillField, removeButton);
 	}
 
 	// C:
@@ -136,23 +82,8 @@ public class Panel_Skills extends Panel_Data
 	public void clearPanel()
 	{
 		clearEnterDataPanel();
-		clearSavedSkillsPanel();
-	}
-
-	public void clearSavedSkillsPanel()
-	{
-		for(HashMap.Entry<JTextField, JButton> entry : skillFields.entrySet())
-		{
-			// Remove components from the panel for saved skills
-			savedSkillsPanel.remove(entry.getKey());
-			savedSkillsPanel.remove(entry.getValue());
-		}
-		skillFields.clear();
 		skills.clear();
-
-		// Repaint the panel
-		savedSkillsPanel.revalidate();
-		savedSkillsPanel.repaint();
+		((Panel_SavedStrings) savedSkillsPanel).clearPanel();
 	}
 
 	public HashMap<String,String> collectInformation()
@@ -177,7 +108,7 @@ public class Panel_Skills extends Panel_Data
 		for(HashMap.Entry<String,String> entry : skillsMap.entrySet())
 		{
 			skills.put(entry.getKey(),entry.getValue());
-			addSkillToPanel(entry.getKey());
+			((Panel_SavedStrings) savedSkillsPanel).addStringRepresentationToPanel(entry.getKey());
 		}
 	}
 
@@ -245,7 +176,7 @@ public class Panel_Skills extends Panel_Data
 				{
 					skills.put(skill.getText(), description.getText());
 					// Add skill representation to the panel
-					addSkillToPanel(skill.getText());
+					((Panel_SavedStrings) savedSkillsPanel).addStringRepresentationToPanel(skill.getText());
 
 					clearEnterDataPanel();
 				}
@@ -255,18 +186,5 @@ public class Panel_Skills extends Panel_Data
 				}
 			}
 		});
-	}
-
-	// R:
-	public void removeSkill(JTextField field, JButton button)
-	{
-		// Remove duty
-		skills.remove(field.getText());
-		// Remove components
-		savedSkillsPanel.remove(field);
-		savedSkillsPanel.remove(button);
-		// Repaint the panel
-		savedSkillsPanel.revalidate();
-		savedSkillsPanel.repaint();
 	}
 }

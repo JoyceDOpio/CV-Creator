@@ -16,12 +16,11 @@ public class Panel_Interests extends Panel_Data
 	JTextArea description;
 	JButton addInterestButton;
 	
-	GridBagConstraints gc, savedLanguagesSubPanelgc, enterDataSubPanelgc;
+	GridBagConstraints enterDataSubPanelgc;
 	// Inner panel for organizing skills layout
 	JPanel savedInterestsPanel, enterDataPanel;
 
 	HashMap<String, String> interests;
-	HashMap<JTextField, JButton> interestFields;
 	
 	Panel_Interests()
 	{		
@@ -29,8 +28,7 @@ public class Panel_Interests extends Panel_Data
 		setOuterBorder(5,5,5,5);
 		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 
-		interests = new HashMap<String, String>();
-		interestFields = new HashMap<JTextField, JButton>();
+		interests = new HashMap<>();
 
 		// GUI componenets
 		interestLabel = new JLabelStyle("Zainteresowanie");
@@ -49,17 +47,15 @@ public class Panel_Interests extends Panel_Data
 
 		// Inner panels  for:
 		// - saved interests
-		savedInterestsPanel = new JPanel();
-		savedInterestsPanel.setLayout(new GridBagLayout());
-		savedLanguagesSubPanelgc = new GridBagConstraints();
-		// Insets create indents - 5 pixels from bottom and from
-		// the right side
-		savedLanguagesSubPanelgc.insets = new Insets(0, 5, 0, 5);
-		savedLanguagesSubPanelgc.weightx = 100;
-		savedLanguagesSubPanelgc.weighty = 1;
-		savedLanguagesSubPanelgc.gridx = 0;
-		savedLanguagesSubPanelgc.gridy = 0;
-		savedLanguagesSubPanelgc.gridwidth = 1;
+		savedInterestsPanel = new Panel_SavedStrings()
+		{
+			@Override
+			public void removeObject(JTextField field)
+			{
+				// Remove duty
+				interests.remove(field.getText());
+			}
+		};
 		add(savedInterestsPanel);
 		// - enetring data
 		enterDataPanel = new JPanel();
@@ -78,52 +74,6 @@ public class Panel_Interests extends Panel_Data
 		placeElementsInPanel(enterDataPanel, enterDataSubPanelgc);
 	}
 
-	// A:
-	public void addInterestToPanel(String text)
-	{
-		savedLanguagesSubPanelgc.fill = GridBagConstraints.BOTH;
-		savedLanguagesSubPanelgc.anchor = GridBagConstraints.FIRST_LINE_START;
-		savedLanguagesSubPanelgc.gridx = 0;
-		savedLanguagesSubPanelgc.gridy++;
-
-		final JTextField interestField = new JTextFieldStyle(text);
-		// If the text is longer than the text field, the text fields shows the
-		// beginning of the text
-		interestField.setCaretPosition(0);
-		// Specifies how many columne the text field will occupy
-		interestField.setColumns(2);
-		savedInterestsPanel.add(interestField, savedLanguagesSubPanelgc);
-
-//		savedLanguagesSubPanelgc.gridwidth = 1;
-
-
-		final JButton removeButton = new JButtonStyle("Usuń");
-
-		removeButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				removeInterest(interestField, removeButton);
-			}
-		});
-		savedLanguagesSubPanelgc.gridx = 1;
-
-		savedLanguagesSubPanelgc.weightx = 1;
-		savedLanguagesSubPanelgc.weighty = 100;
-
-		savedLanguagesSubPanelgc.fill = GridBagConstraints.VERTICAL;
-		savedLanguagesSubPanelgc.anchor = GridBagConstraints.FIRST_LINE_END;
-		savedInterestsPanel.add(removeButton, savedLanguagesSubPanelgc);
-		// Repaint the panel
-		savedInterestsPanel.revalidate();  // For JDK 1.7 or above.
-		savedInterestsPanel.repaint();
-
-		// Add the duty field and it's removal button to the
-		// hash map <-- this will enable us later to remove them
-		//              all at once
-		interestFields.put(interestField, removeButton);
-	}
-
 	// C:
 	public void clearEnterDataPanel()
 	{
@@ -135,23 +85,8 @@ public class Panel_Interests extends Panel_Data
 	public void clearPanel()
 	{
 		clearEnterDataPanel();
-		clearSavedInterestsPanel();
-	}
-
-	public void clearSavedInterestsPanel()
-	{
-		for(HashMap.Entry<JTextField, JButton> entry : interestFields.entrySet())
-		{
-			// Remove components from the panel for saved interests
-			savedInterestsPanel.remove(entry.getKey());
-			savedInterestsPanel.remove(entry.getValue());
-		}
-		interestFields.clear();
 		interests.clear();
-
-		// Repaint the panel
-		savedInterestsPanel.revalidate();
-		savedInterestsPanel.repaint();
+		((Panel_SavedStrings) savedInterestsPanel).clearPanel();
 	}
 
 	public HashMap<String,String> collectInformation()
@@ -176,7 +111,7 @@ public class Panel_Interests extends Panel_Data
 		for(HashMap.Entry<String,String> entry : interestsMap.entrySet())
 		{
 			interests.put(entry.getKey(),entry.getValue());
-			addInterestToPanel(entry.getKey());
+			((Panel_SavedStrings) savedInterestsPanel).addStringRepresentationToPanel(entry.getKey());
 		}
 	}
 
@@ -238,9 +173,10 @@ public class Panel_Interests extends Panel_Data
 			{
 				if(interest.getText().length() != 0)
 				{
+					// Add the interest to the map
 					interests.put(interest.getText(), description.getText());
 					// Add interest representation to the panel
-					addInterestToPanel(interest.getText());
+					((Panel_SavedStrings) savedInterestsPanel).addStringRepresentationToPanel(interest.getText());
 
 					clearEnterDataPanel();
 				}
@@ -250,18 +186,5 @@ public class Panel_Interests extends Panel_Data
 				}
 			}
 		});
-	}
-
-	// R:
-	public void removeInterest(JTextField field, JButton button)
-	{
-		// Remove duty
-		interests.remove(field.getText());
-		// Remove components
-		savedInterestsPanel.remove(field);
-		savedInterestsPanel.remove(button);
-		// Repaint the panel
-		savedInterestsPanel.revalidate();
-		savedInterestsPanel.repaint();
 	}
 }

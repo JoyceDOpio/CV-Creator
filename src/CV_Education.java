@@ -64,6 +64,7 @@ public class CV_Education
 	
 	public String toString()
 	{	
-		return from + " - " + to + "\n" + school + "\n" + course + "\n" + specialisation;
+		return getFrom() + "-" + getTo() + "; " + getCourse() + "; " +
+				getSchool();
 	}
 }

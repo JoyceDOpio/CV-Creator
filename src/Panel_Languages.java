@@ -14,11 +14,10 @@ public class Panel_Languages extends Panel_Data
 	JTextField language, level;
 	JButton addLanguageButton;
 	
-	GridBagConstraints gc, savedLanguagesSubPanelgc, enterDataSubPanelgc;
+	GridBagConstraints enterDataSubPanelgc;
 	// Inner panel for organizing languages layout
 	JPanel savedLanguagesPanel, enterDataPanel;
 	HashMap<String, String> languages;
-	HashMap<JTextField, JButton> languageFields;
 	
 	Panel_Languages()
 	{
@@ -27,7 +26,6 @@ public class Panel_Languages extends Panel_Data
 		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 
 		languages = new HashMap<String, String>();
-		languageFields = new HashMap<JTextField, JButton>();
 		
 		languageLabel = new JLabelStyle("Język");
 		levelLabel = new JLabelStyle("Poziom");
@@ -41,18 +39,15 @@ public class Panel_Languages extends Panel_Data
 		
 		// Inner panels for:
 		// - saved languages
-		savedLanguagesPanel = new JPanel();
-		savedLanguagesPanel.setLayout(new GridBagLayout());
-		savedLanguagesSubPanelgc = new GridBagConstraints();
-		// Insets create indents - 5 pixels from bottom and from
-		// the right side
-		savedLanguagesSubPanelgc.insets = new Insets(0, 5, 0, 5);
-		savedLanguagesSubPanelgc.weightx = 100;
-		savedLanguagesSubPanelgc.weighty = 1;
-		savedLanguagesSubPanelgc.gridx = 0;
-		savedLanguagesSubPanelgc.gridy = 0;
-		savedLanguagesSubPanelgc.gridwidth = 1;
-//		add(savedLanguagesPanel, gc);
+		savedLanguagesPanel = new Panel_SavedStrings()
+		{
+			@Override
+			public void removeObject(JTextField field)
+			{
+				// Remove language
+				languages.remove(language.getText());
+			}
+		};
 		add(savedLanguagesPanel);
 		// - entering data
 		enterDataPanel = new JPanel();
@@ -66,57 +61,9 @@ public class Panel_Languages extends Panel_Data
 		enterDataSubPanelgc.gridx = 0;
 		enterDataSubPanelgc.gridy = 0;
 		enterDataSubPanelgc.gridwidth = 1;
-//		add(enterDataPanel, gc);
 		add(enterDataPanel);
 		// Place in the sub-panel the GUI elements for enetering data
 		placeElementsInPanel(enterDataPanel, enterDataSubPanelgc);
-	}
-
-	// A:
-	public void addLanguageToPanel(String text)
-	{
-//		subPanelgc.fill = GridBagConstraints.BOTH;
-		savedLanguagesSubPanelgc.fill = GridBagConstraints.HORIZONTAL;
-		savedLanguagesSubPanelgc.anchor = GridBagConstraints.FIRST_LINE_START;
-		savedLanguagesSubPanelgc.gridx = 0;
-		savedLanguagesSubPanelgc.gridy++;
-
-		final JTextField languageField = new JTextFieldStyle(text);
-		// If the text is longer than the text field, the text fields shows the
-		// beginning of the text
-		languageField.setCaretPosition(0);
-		// Specifies how many columne the text field will occupy
-		languageField.setColumns(2);
-		savedLanguagesPanel.add(languageField, savedLanguagesSubPanelgc);
-
-		final JButton removeButton = new JButtonStyle("Usuń");
-
-		removeButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				removeLanguage(languageField, removeButton);
-			}
-		});
-
-		savedLanguagesSubPanelgc.gridx = 1;
-
-		savedLanguagesSubPanelgc.weightx = 1;
-		savedLanguagesSubPanelgc.weighty = 100;
-
-		savedLanguagesSubPanelgc.fill = GridBagConstraints.VERTICAL;
-		savedLanguagesSubPanelgc.anchor = GridBagConstraints.FIRST_LINE_END;
-
-		savedLanguagesPanel.add(removeButton, savedLanguagesSubPanelgc);
-
-		// Repaint the panel
-		savedLanguagesPanel.revalidate();  // For JDK 1.7 or above.
-		savedLanguagesPanel.repaint();
-
-		// Add the duty field and it's removal button to the
-		// hash map <-- this will enable us later to remove them
-		//              all at once
-		languageFields.put(languageField, removeButton);
 	}
 
 	// C:
@@ -130,23 +77,8 @@ public class Panel_Languages extends Panel_Data
 	public void clearPanel()
 	{
 		clearEnterDataPanel();
-		clearSavedLangPanel();
-	}
-
-	public void clearSavedLangPanel()
-	{
-		for(HashMap.Entry<JTextField, JButton> entry : languageFields.entrySet())
-		{
-			// Remove components from the panel for saved languages
-			savedLanguagesPanel.remove(entry.getKey());
-			savedLanguagesPanel.remove(entry.getValue());
-		}
-		languageFields.clear();
 		languages.clear();
-
-		// Repaint the panel
-		savedLanguagesPanel.revalidate();
-		savedLanguagesPanel.repaint();
+		((Panel_SavedStrings) savedLanguagesPanel).clearPanel();
 	}
 
 	public HashMap<String, String> collectInformation()
@@ -171,7 +103,7 @@ public class Panel_Languages extends Panel_Data
 		for(HashMap.Entry<String,String> entry : languagesMap.entrySet())
 		{
 			languages.put(entry.getKey(),entry.getValue());
-			addLanguageToPanel(entry.getKey());
+			((Panel_SavedStrings) savedLanguagesPanel).addStringRepresentationToPanel(entry.getKey());
 		}
 	}
 
@@ -238,7 +170,7 @@ public class Panel_Languages extends Panel_Data
 					languages.put(language.getText(), level.getText());
 
 					// Add language epresentation to the panel
-					addLanguageToPanel(language.getText());
+					((Panel_SavedStrings) savedLanguagesPanel).addStringRepresentationToPanel(language.getText());
 
 					clearEnterDataPanel();
 				}
@@ -248,18 +180,5 @@ public class Panel_Languages extends Panel_Data
 				}
 			}
 		});
-	}
-
-	// R:
-	public void removeLanguage(JTextField field, JButton button)
-	{
-		// Remove duty
-		languages.remove(language.getText());
-		// Remove components
-		savedLanguagesPanel.remove(field);
-		savedLanguagesPanel.remove(button);
-		// Repaint the panel
-		savedLanguagesPanel.revalidate();
-		savedLanguagesPanel.repaint();
 	}
 }

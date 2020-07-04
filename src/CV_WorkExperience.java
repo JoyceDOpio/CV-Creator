@@ -82,6 +82,7 @@ class CV_WorkExperience
 	
 	public String toString()
 	{	
-		return from + " - " + to + "\n" + occupation + "\n" + workplace;
+		return getFrom() + "-" + getTo() + "; " + getOccupation() + "; " +
+				getWorkplace();
 	}
 }

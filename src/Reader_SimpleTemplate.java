@@ -117,20 +117,24 @@ public class Reader_SimpleTemplate
                     i++;
                 }
                 // Get profession summary
-                else if(lines[i].matches("^\\s*$"))
-                {
+                else if(lines[i].matches("^\\s*$")) {
                     System.out.println("line 113: " + lines[i]);
                     StringBuilder sectionText = new StringBuilder();
                     i++;
 
-                    while(!sectionHeaders.contains(lines[i]) && i < lines.length)
-                    {
+                    while (!sectionHeaders.contains(lines[i]) && i < lines.length) {
                         sectionText.append(lines[i]);
+                        sectionText.append(" ");
                         System.out.println("line 121: " + lines[i]);
                         i++;
                     }
-                    cv.setProfessionSummary(sectionText.toString());
-                    System.out.println("summary: " + cv.professionSummary);
+                    if (sectionText.length() != 0)
+                    {
+                        // Delete last space character
+                        sectionText.delete(sectionText.length()-1,sectionText.length());
+                        cv.setProfessionSummary(sectionText.toString());
+                        System.out.println("summary: " + cv.professionSummary);
+                    }
                 }
 
                 System.out.println("line 128: " + lines[i]);
@@ -148,11 +152,12 @@ public class Reader_SimpleTemplate
                     System.out.println("line: " + lines[i]);
                     i++;
 
-                    while(!sectionHeaders.contains(lines[i]) && i < lines.length)
+                    while(i < lines.length && !sectionHeaders.contains(lines[i]))
                     {
-                        CV_WorkExperience work =  new CV_WorkExperience();
                         if(lines[i].contains(" - "))
                         {
+                            CV_WorkExperience work =  new CV_WorkExperience();
+
                             // Get from and to dates
                             work.setFrom(lines[i].split(" - ")[0]);
                             work.setTo(lines[i].split(" - ")[1]);
@@ -172,12 +177,14 @@ public class Reader_SimpleTemplate
                             System.out.println("line: " + lines[i]);
                             System.out.println("workplace: " + work.getWorkplace());
 
-                            // Get duties
-                            if(lines[i+1].startsWith("-"))
-                            {
-                                i++;
+                            i++;
 
-                                while(lines[i].startsWith("-"))
+                            // Get duties
+                            if(i < lines.length && lines[i+1].startsWith("-"))
+                            {
+//                                i++;
+
+                                while(i < lines.length && lines[i].startsWith("-"))
                                 {
                                     System.out.println("line: " + lines[i]);
                                     System.out.println("duty: " +lines[i].split("- ")[1]);
@@ -186,7 +193,7 @@ public class Reader_SimpleTemplate
 
                                 }
                                 // If line is a new line
-                                if(lines[i].matches("^\\s*$"))
+                                if(i < lines.length && lines[i].matches("^\\s*$"))
                                 {
                                     i++;
                                     System.out.println("line: " + lines[i]);
@@ -196,8 +203,9 @@ public class Reader_SimpleTemplate
                             // Add work experience
                             cv.addWork(work);
                         }
-
-                        System.out.println("line: " + lines[i]);
+                        if(i < lines.length)
+                            System.out.println("line: " + lines[i]);
+                        i++;
                     }
                 }
                 // Education
@@ -241,7 +249,8 @@ public class Reader_SimpleTemplate
                         }
 
                         i++;
-                        System.out.println("line: " + lines[i]);
+                        if(i < lines.length)
+                            System.out.println("line: " + lines[i]);
 
                         // If line is a new line
                         if(i < lines.length && lines[i].matches("^\\s*$"))
@@ -256,7 +265,8 @@ public class Reader_SimpleTemplate
 //                System.out.println("line: " + lines[i]);
 //                    i++;
 
-                    while (++i < lines.length && lines[i].contains(": ")) {
+                    while (++i < lines.length && lines[i].contains(": "))
+                    {
                         String[] skill = lines[i].split(": ");
                         cv.addSkill(skill[0], skill[1]);
                         System.out.println("line 260: " + lines[i]);
@@ -279,8 +289,8 @@ public class Reader_SimpleTemplate
                     // If line is a new line
                     if(i < lines.length && lines[i].matches("^\\s*$"))
                     {
-                        i++;
                         System.out.println("line: " + lines[i]);
+                        i++;
                     }
 
                     while(i < lines.length && lines[i].contains(": "))

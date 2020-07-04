@@ -2,8 +2,7 @@
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 
-import java.awt.BorderLayout;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -40,17 +39,20 @@ public class CVCreator extends JFrame
 			// method will make the interface look more like the one of
 			// the computer's operating system (e.g. Windows).
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//            UIManager.getLookAndFeelDefaults().put("TextField.font", new Font("Arial", Font.PLAIN, 14));
         }
         catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e)
         {
             e.printStackTrace();
         }
 
-		String text = "text1" + "\n";
+		StringBuilder text = new StringBuilder("text1\n");
 		System.out.println(text);
-        text = text.substring(0, text.length() - 1);
-        text = text + "text2";
-		System.out.println(text);
+//        text = text.substring(0, text.length() - 1);
+//        text = text + "text2";
+        text.delete(text.length()-1,text.length());
+        text.append("text2");
+		System.out.println(text.toString());
 
 		System.out.println("\n".matches("^\\s*$"));
 
@@ -147,11 +149,15 @@ public class CVCreator extends JFrame
                         int numberOfPages = reader.getNumberOfPages();
                         StringBuilder text = new StringBuilder();
 
+                        // For every page
                         for(int i = 0; i < numberOfPages; i++)
                         {
                             text.append(PdfTextExtractor.getTextFromPage(reader,i+1));
+                            text.append("\n");
 //                            System.out.println(PdfTextExtractor.getTextFromPage(reader,i+1));
                         }
+                        // Remove last new line
+                        text.delete(text.length()-1,text.length());
 
 //                        System.out.println(text + "\n");
                         cv = Reader_SimpleTemplate.convertToCV(text);
@@ -161,6 +167,10 @@ public class CVCreator extends JFrame
 //                        {
 //                            JOptionPane.showMessageDialog(null, "Struktura podanego pliku PDF nie została rozpoznana.");
 //                        }
+
+                        // Clear panels
+                        enterDataPanel.clearPanels();
+
                         // Insert the cv information into panel text fields
                         enterDataPanel.insertInformation(cv);
                     }

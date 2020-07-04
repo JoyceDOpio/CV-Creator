@@ -132,6 +132,8 @@ public class SimpleTemplate extends Document
 			{
 				text = text + entry.getKey() + ": " + entry.getValue() + "\n";
 			}
+			// Remove last new line character
+			text = text.substring(0, text.length() - 1);
 
 			try
 			{
@@ -163,8 +165,10 @@ public class SimpleTemplate extends Document
 
 			for (HashMap.Entry<String, String> entry : cv.languages.entrySet())
 			{
-				text = "\n" + text + entry.getKey() + ": " + entry.getValue() + "\n";
+				text = text + entry.getKey() + ": " + entry.getValue() + "\n";
 			}
+			// Remove last new line character
+			text = text.substring(0, text.length() - 1);
 
 			try
 			{
