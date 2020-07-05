@@ -7,20 +7,18 @@ import java.util.Arrays;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-//import javax.swing.JPanel;
-
 
 public class Panel_PersonalDetails extends Panel_Data
 {
 	JLabel firstNameLabel, lastNameLabel, emailLabel, phoneLabel,
 			linkedInLabel, githubLabel, countryLabel;
-//	JTextField firstName, lastName, email, phone,
-//			linkedIn, github,country;
+
 	ArrayList<JTextFieldStyle> personalDetailsTextFields;
 	
 	Panel_PersonalDetails()
-	{		
-		setInnerBorder("Dane osobowe");
+	{
+		// Panel borders
+		setInnerBorder(" Dane osobowe ");
 		setOuterBorder(5,5,5,5);
 		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 
@@ -57,7 +55,7 @@ public class Panel_PersonalDetails extends Panel_Data
 		gc.anchor = GridBagConstraints.FIRST_LINE_START;		
 		// Insets create indents - 5 pixels from bottom and from 
 		// the right side
-		gc.insets = new Insets(0, 5, 0, 5);
+		gc.insets = new Insets(0, 5, 2, 5);
 		
 		gc.gridwidth = 2;
 						

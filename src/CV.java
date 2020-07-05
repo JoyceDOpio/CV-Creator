@@ -29,8 +29,8 @@ public class CV
 
 	String professionSummary;
 	CV_PersonalDetails personalDetails;
-	ArrayList<CV_WorkExperience> workExp;
-	ArrayList<CV_Education> education;
+	ArrayList<Object> workExp;
+	ArrayList<Object> education;
 	ArrayList<String> references;
 	HashMap<String, String> skills, interests, languages;
 	
@@ -38,8 +38,8 @@ public class CV
 	{
 		this.professionSummary = "";
 		personalDetails = new CV_PersonalDetails();
-		workExp = new ArrayList<CV_WorkExperience>();
-		education = new ArrayList<CV_Education>();
+		workExp = new ArrayList<Object>();
+		education = new ArrayList<Object>();
 		skills = new HashMap<String,String>();
 		interests = new HashMap<String, String>();
 		languages = new HashMap<String, String>();
@@ -73,14 +73,14 @@ public class CV
 	}
 
 	// G
-	public ArrayList<CV_Education> getEducation(){return education;}
+	public ArrayList<Object> getEducation(){return education;}
 	public HashMap<String,String> getInterests(){return interests;}
 	public HashMap<String,String> getLanguages(){return languages;}
 	public CV_PersonalDetails getPersonalDetails(){return personalDetails;}
 	public String getProfessionSummary(){return professionSummary;}
 	public ArrayList<String> getReferences(){return references;}
 	public HashMap<String,String> getSkills(){return skills;}
-	public ArrayList<CV_WorkExperience> getWorkExperience(){return workExp;}
+	public ArrayList<Object> getWorkExperience(){return workExp;}
 
 	// S:
 	public void setProfessionSummary(String summary)

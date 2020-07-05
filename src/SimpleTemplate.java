@@ -14,9 +14,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 //import com.itextpdf.kernel.pdf.PdfWriter;
 
 public class SimpleTemplate extends Document 
-{
-//	boolean pageSize = setPageSize(PageSize.A4);
-	
+{	
 	BaseFont baseFont = null;{
 		try 
 		{
@@ -90,14 +88,13 @@ public class SimpleTemplate extends Document
 		{
 			String text = "";
 
-			for(CV_Education edu : cv.education)
+			for(Object edu : cv.education)
 			{
-				text = text + edu.intoText() + "\n";
+				text = text + ((CV_Education) edu).intoText() + "\n";
 				text = text + "\n";
 			}
 			// Remove last new line character
 			text = text.substring(0, text.length() - 1);
-
 
 			try
 			{
@@ -274,7 +271,7 @@ public class SimpleTemplate extends Document
 		{
 			try
 			{
-				Paragraph p = new Paragraph("\n" + cv.professionSummary, font);
+				Paragraph p = new Paragraph("\n" + cv.professionSummary + "\n", font);
 				p.setAlignment(Paragraph.ALIGN_JUSTIFIED);
 				add(p);
 				// If adding the paragraph was successfull,
@@ -328,8 +325,6 @@ public class SimpleTemplate extends Document
 	public boolean buildSkills()
 	{
 		String text = "";
-
-//		final String FONT = "Fonts/arialuni.TTF";
 		
 		if(!cv.skills.isEmpty())
 		{
@@ -366,11 +361,15 @@ public class SimpleTemplate extends Document
 		{
 			String text = "";
 			// For every work experience in the list
-			for(CV_WorkExperience work : cv.workExp)
+			for(Object work : cv.workExp)
 			{
-				text = text + work.from + " - " + work.to + "\n" + work.occupation + "\n" + work.workplace + "\n";
+				String fromDate = ((CV_WorkExperience) work).getFrom();
+				String toDate = ((CV_WorkExperience) work).getTo();
 
-				for(String duty : work.duties)
+				text = text + fromDate.replace('-','.') + " - " + toDate.replace('-','.') +
+						"\n" + ((CV_WorkExperience) work).occupation + "\n" + ((CV_WorkExperience) work).workplace + "\n";
+
+				for(String duty : ((CV_WorkExperience) work).duties)
 				{
 					text = text + "- " + duty + "\n";
 				}

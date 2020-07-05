@@ -12,6 +12,7 @@ import javax.swing.border.LineBorder;
 public class JButtonStyle extends JButton
 {
 	private static final long serialVersionUID = 1L;
+	private boolean clicked = false;
 
 	JButtonStyle(String text)
 	{
@@ -19,4 +20,8 @@ public class JButtonStyle extends JButton
 
 		setFont(new Font("Arial", Font.TRUETYPE_FONT,14));
 	}
+
+	public boolean getClicked(){return clicked;}
+
+	public void click(){clicked = !clicked;}
 }

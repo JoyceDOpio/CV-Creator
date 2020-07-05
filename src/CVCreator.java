@@ -15,7 +15,7 @@ public class CVCreator extends JFrame
 {
 	CV cv = new CV();
 	SimpleTemplate document;
-	Panel_EnterData enterDataPanel;
+	Panel_CVData enterDataPanel;
 
 	// Using this process to invoke the contructor,
 	// JFileChooser points to user's default directory
@@ -39,23 +39,11 @@ public class CVCreator extends JFrame
 			// method will make the interface look more like the one of
 			// the computer's operating system (e.g. Windows).
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//            UIManager.getLookAndFeelDefaults().put("TextField.font", new Font("Arial", Font.PLAIN, 14));
         }
         catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e)
         {
             e.printStackTrace();
         }
-
-		StringBuilder text = new StringBuilder("text1\n");
-		System.out.println(text);
-//        text = text.substring(0, text.length() - 1);
-//        text = text + "text2";
-        text.delete(text.length()-1,text.length());
-        text.append("text2");
-		System.out.println(text.toString());
-
-		System.out.println("\n".matches("^\\s*$"));
-
 
 		setLayout(new BorderLayout());
 
@@ -145,28 +133,20 @@ public class CVCreator extends JFrame
                 {
                     try
                     {
-                        reader = new PdfReader(fileChooser.getSelectedFile().getAbsolutePath());
-                        int numberOfPages = reader.getNumberOfPages();
-                        StringBuilder text = new StringBuilder();
+                    	reader = new PdfReader(fileChooser.getSelectedFile().getAbsolutePath());
+						int numberOfPages = reader.getNumberOfPages();
+						StringBuilder text = new StringBuilder();
 
-                        // For every page
-                        for(int i = 0; i < numberOfPages; i++)
-                        {
-                            text.append(PdfTextExtractor.getTextFromPage(reader,i+1));
-                            text.append("\n");
-//                            System.out.println(PdfTextExtractor.getTextFromPage(reader,i+1));
-                        }
-                        // Remove last new line
-                        text.delete(text.length()-1,text.length());
+						// For every page
+						for(int i = 0; i < numberOfPages; i++)
+						{
+							text.append(PdfTextExtractor.getTextFromPage(reader,i+1));
+							text.append("\n");
+						}
+						// Remove last new line
+						text.delete(text.length()-1,text.length());
 
-//                        System.out.println(text + "\n");
-                        cv = Reader_SimpleTemplate.convertToCV(text);
-//                        try
-//                        {}
-//                        catch(Exception exception)
-//                        {
-//                            JOptionPane.showMessageDialog(null, "Struktura podanego pliku PDF nie została rozpoznana.");
-//                        }
+						cv = Reader_SimpleTemplate.convertToCV(text);
 
                         // Clear panels
                         enterDataPanel.clearPanels();
@@ -177,10 +157,10 @@ public class CVCreator extends JFrame
                     catch(IOException ex)
                     {
                         ex.getMessage();
+                        JOptionPane.showMessageDialog(null, "Dokument jest pusty.");
                     }
 				}
 			}
-
         });
         // - Save file menu item
         menuItem3.addActionListener(new ActionListener()
@@ -201,7 +181,7 @@ public class CVCreator extends JFrame
         // Add menu bar to frame 
         setJMenuBar(menuBar);
 
-		enterDataPanel = new Panel_EnterData();
+		enterDataPanel = new Panel_CVData();
 		// Create a scroll or the panel
 		JScrollPane scrollPane = new JScrollPane(enterDataPanel);
 		// Set the scroll direction

@@ -116,16 +116,23 @@ public class Reader_SimpleTemplate
                     System.out.println("country: " + cv.personalDetails.getCountry());
                     i++;
                 }
+                // If it's a new line
+                else if(lines[i].matches("^\\s*$"))
+                {
+                    System.out.println("line 141: " + lines[i]);
+                    i++;
+                }
                 // Get profession summary
-                else if(lines[i].matches("^\\s*$")) {
-                    System.out.println("line 113: " + lines[i]);
+//                else if(lines[i].matches("^\\s*$")) {
+                else {
+                    System.out.println("line 128: " + lines[i]);
                     StringBuilder sectionText = new StringBuilder();
                     i++;
 
                     while (!sectionHeaders.contains(lines[i]) && i < lines.length) {
                         sectionText.append(lines[i]);
                         sectionText.append(" ");
-                        System.out.println("line 121: " + lines[i]);
+                        System.out.println("line 135: " + lines[i]);
                         i++;
                     }
                     if (sectionText.length() != 0)
@@ -137,7 +144,7 @@ public class Reader_SimpleTemplate
                     }
                 }
 
-                System.out.println("line 128: " + lines[i]);
+                System.out.println("line 147: " + lines[i]);
                 if(lines[i].equals(""))
                     System.out.println("true");
 //                i++;
@@ -149,7 +156,7 @@ public class Reader_SimpleTemplate
                 // Workexperience
                 if(lines[i].equals(sectionHeaders.get(0)))
                 {
-                    System.out.println("line: " + lines[i]);
+                    System.out.println("line 152: " + lines[i]);
                     i++;
 
                     while(i < lines.length && !sectionHeaders.contains(lines[i]))
@@ -163,30 +170,30 @@ public class Reader_SimpleTemplate
                             work.setTo(lines[i].split(" - ")[1]);
                             System.out.println("from: " + work.getFrom());
                             System.out.println("to: " + work.getTo());
-                            System.out.println("line: " + lines[i]);
+                            System.out.println("line 166: " + lines[i]);
 
                             // Get occupation
                             i++;
-                            System.out.println("line: " + lines[i]);
+                            System.out.println("line 170: " + lines[i]);
                             work.setOccupation(lines[i]);
                             System.out.println("occupation: " + work.getOccupation());
 
                             // Get workplace
                             i++;
                             work.setWorkplace(lines[i]);
-                            System.out.println("line: " + lines[i]);
+                            System.out.println("line 177: " + lines[i]);
                             System.out.println("workplace: " + work.getWorkplace());
 
                             i++;
 
                             // Get duties
-                            if(i < lines.length && lines[i+1].startsWith("-"))
+                            if(i < lines.length && lines[i].startsWith("-"))
                             {
 //                                i++;
 
                                 while(i < lines.length && lines[i].startsWith("-"))
                                 {
-                                    System.out.println("line: " + lines[i]);
+                                    System.out.println("line 189: " + lines[i]);
                                     System.out.println("duty: " +lines[i].split("- ")[1]);
                                     work.addDuty(lines[i].split("- ")[1]);
                                     i++;
@@ -196,16 +203,16 @@ public class Reader_SimpleTemplate
                                 if(i < lines.length && lines[i].matches("^\\s*$"))
                                 {
                                     i++;
-                                    System.out.println("line: " + lines[i]);
+                                    System.out.println("line 199: " + lines[i]);
                                 }
                             }
 
                             // Add work experience
                             cv.addWork(work);
                         }
-                        if(i < lines.length)
-                            System.out.println("line: " + lines[i]);
-                        i++;
+//                        if(i < lines.length)
+//                            System.out.println("line 207: " + lines[i]);
+//                        i++;
                     }
                 }
                 // Education
@@ -224,45 +231,45 @@ public class Reader_SimpleTemplate
                             edu.setTo(lines[i].split(" - ")[1]);
                             System.out.println("from: " + edu.getFrom());
                             System.out.println("to: " + edu.getTo());
-                            System.out.println("line: " + lines[i]);
+                            System.out.println("line 227: " + lines[i]);
 
                             // Get school name
                             i++;
-                            System.out.println("line: " + lines[i]);
+                            System.out.println("line 231: " + lines[i]);
                             edu.setSchool(lines[i]);
                             System.out.println(edu.getSchool());
 
                             // Get workplace
                             i++;
                             edu.setCourse(lines[i]);
-                            System.out.println("line: " + lines[i]);
+                            System.out.println("line 238: " + lines[i]);
                             System.out.println(edu.getCourse());
 
                             // Get specialisation
                             i++;
                             edu.setSpecialisation(lines[i]);
-                            System.out.println("line: " + lines[i]);
+                            System.out.println("line 244: " + lines[i]);
                             System.out.println(edu.getSpecialisation());
 
-                            // Add work experience
+                            // Add education
                             cv.addEducation(edu);
                         }
 
                         i++;
                         if(i < lines.length)
-                            System.out.println("line: " + lines[i]);
+                            System.out.println("line 253: " + lines[i]);
 
                         // If line is a new line
                         if(i < lines.length && lines[i].matches("^\\s*$"))
                         {
                             i++;
-                            System.out.println("line: " + lines[i]);
+                            System.out.println("line 259: " + lines[i]);
                         }
                     }
                 }
                 // Skills
                 else if(lines[i].equals(sectionHeaders.get(2))) {
-//                System.out.println("line: " + lines[i]);
+                System.out.println("line 265: " + lines[i]);
 //                    i++;
 
                     while (++i < lines.length && lines[i].contains(": "))

@@ -4,9 +4,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -23,8 +23,8 @@ public class Panel_Duties extends Panel_Data
 	
 	Panel_Duties()
 	{
-		// Pane borders
-		setInnerBorder("Obowiązki");
+		// Panel borders
+		setInnerBorder(" Obowiązki ");
 		setOuterBorder(5,5,5,5);
 		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 		
@@ -42,15 +42,15 @@ public class Panel_Duties extends Panel_Data
 		savedDutiesPanel = new Panel_SavedStrings()
 		{
 			@Override
-			public void removeObject(JTextField field)
+			public void removeObject(String value)
 			{
 				// Remove duty
-				duties.remove(field.getText());
+				duties.remove(value);
 			}
 		};
 		add(savedDutiesPanel);
 		// - entering data
-		enterDataPanel = new JPanel();
+		enterDataPanel = new Panel_Data();
 		enterDataPanel.setLayout(new GridBagLayout());
 		enterDataSubPanelgc = new GridBagConstraints();
 		// Insets create indents - 5 pixels from bottom and from

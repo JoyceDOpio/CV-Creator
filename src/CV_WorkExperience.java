@@ -20,8 +20,8 @@ class CV_WorkExperience
 	
 	CV_WorkExperience(String from, String to, String occupation, String workplace, ArrayList<String> duties)
 	{
-		this.from = formatDate(from);
-		this.to = formatDate(to);	
+		this.from = from;
+		this.to = to;
 		this.occupation = occupation;
 		this.workplace = workplace;
 		this.duties = duties;		
@@ -32,17 +32,9 @@ class CV_WorkExperience
 	{
 		duties.add(duty);
 	}
-	
-	// F:
-	public String formatDate(String date)
-	{
-		// Replace "-" with "."
-		return date.replace('-','.');
-	}
-	
+
 	
 	// G:
-	
 	public String getFrom(){return from;}
 	
 	public String getOccupation(){return occupation;}
@@ -52,7 +44,6 @@ class CV_WorkExperience
 	public String getWorkplace(){return workplace;}
 	
 	// R:
-	
 	public void removeDuty(int index)
 	{
 		duties.remove(index);
@@ -64,7 +55,6 @@ class CV_WorkExperience
 	}
 	
 	// S:
-	
 	public void setDuties(ArrayList<String> list)
 	{
 		this.duties = list;
@@ -79,7 +69,6 @@ class CV_WorkExperience
 	public void setWorkplace(String workplace){this.workplace = workplace;}	
 	
 	// T:
-	
 	public String toString()
 	{	
 		return getFrom() + "-" + getTo() + "; " + getOccupation() + "; " +

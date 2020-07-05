@@ -1,291 +1,171 @@
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Properties;
 
 import javax.swing.*;
 
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
-
-public class Panel_Education extends Panel_Data
+public class Panel_Education extends Panel_Objects
 {
-	JLabel toLabel, fromLabel, schoolLabel, courseLabel, specialisationLabel;
-	JDatePickerImpl from, to;
-	JTextField school, course, specialisation;
-	JButton addButton;
-	
-	ArrayList<CV_Education> educationList;
-	
-	GridBagConstraints enterDataSubPanelgc;
-	JPanel savedEducationPanel, enterDataPanel;
-	
 	Panel_Education()
 	{
-		setInnerBorder("Wykształcenie");
+		// Panel borders
+		setInnerBorder(" Wykształcenie ");
 		setOuterBorder(5,5,5,5);
 		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 
-		educationList = new ArrayList<CV_Education>();
-		
-		fromLabel = new JLabelStyle("Od");
-		toLabel = new JLabelStyle("Do");
-		schoolLabel = new JLabelStyle("Nazwa uczelni/szkoły");
-		courseLabel = new JLabelStyle("Kierunek");
-		specialisationLabel = new JLabelStyle("Specjalizacja");
-		
-		// We have to create two separate models for two
-		// date pickers
-		UtilDateModel model = new UtilDateModel();
-		UtilDateModel model2 = new UtilDateModel();
+		objectList = new ArrayList<>();
 
-		Properties p = new Properties();
-		p.put("text.today", "Today");
-		p.put("text.month", "Month");
-		p.put("text.year", "Year");
+		setAddButtonText("Dodaj wykształcenie");
 
-		// Two separate date panels for variables "from" and "to"
-		JDatePanelImpl fromDatePanel = new JDatePanelImpl(model, p);
-		JDatePanelImpl toDatePanel2 = new JDatePanelImpl(model2, p);
-		
-		from = new JDatePickerImpl(fromDatePanel, new DateLabelFormatter());
-		to = new JDatePickerImpl(toDatePanel2, new DateLabelFormatter());
-		school = new JTextFieldStyle();
-		course = new JTextFieldStyle();
-		specialisation = new JTextFieldStyle();
-		addButton = new JButtonStyle("Dodaj wykształcenie");
+		// Place in the sub-panel the GUI elements for entering data
+		placeElementsInPanel((Panel_EnterData) enterDataPanel);
+	}
 
-		// Layout of the main panel
-		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-		
-		// Inner panels for:
-		// - saved education
-		savedEducationPanel = new Panel_SavedObjects()
+	// A:
+	@Override
+	public void addAdditionalComponents(Panel_EnterData panel){}
+
+	@Override
+	public void addObject(SimpleDateFormat dateFormatter)
+	{
+		if(isPanelCompleted())
 		{
-			@Override
-			public void removeObject(Object object)
+			if(!doesObjectExist())
 			{
-				// Remove work experience object
-				educationList.remove((CV_Education) object);
+				final CV_Education edu = new CV_Education(
+						from.getJFormattedTextField().getText().replace('-','.'),
+						to.getJFormattedTextField().getText().replace('-','.'),
+						// School name
+						((JTextField) singleComponents.get(0)).getText(),
+						// Course
+						((JTextField) singleComponents.get(1)).getText(),
+						// Specialisation
+						((JTextField) singleComponents.get(2)).getText());
+
+				objectList.add(edu);
+
+				// Add education representation to the panel
+				((Panel_SavedObjects) savedObjectsPanel).addObjectRepresentationToPanel(edu, ((CV_Education) edu).toString());
+				// Clear the panel for entering data
+				clearEnterDataPanel();
 			}
-		};
-		add(savedEducationPanel);
-		// - entering data
-		enterDataPanel = new JPanel();
-		enterDataPanel.setLayout(new GridBagLayout());
-		enterDataSubPanelgc = new GridBagConstraints();
-		// Insets create indents - 5 pixels from bottom and from
-		// the right side
-		enterDataSubPanelgc.insets = new Insets(0, 5, 0, 5);
-		enterDataSubPanelgc.weightx = 50;
-		enterDataSubPanelgc.weighty = 1;
-		enterDataSubPanelgc.gridx = 0;
-		enterDataSubPanelgc.gridy = 0;
-		add(enterDataPanel);
-		// Place in the sub-panel the GUI elements for enetering data
-		placeElementsInPanel(enterDataPanel, enterDataSubPanelgc);
+			else
+				JOptionPane.showMessageDialog(null, "Wpis o takich samych danych już istnieje.");
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(null, "Wypełnij pola dla \"Wykształcenie\"");
+		}
 	}
 
 	// C:
-	public String chooseDateFormat()
+	public ArrayList<Object> collectInformation()
 	{
-		if(from.getModel().getYear() == to.getModel().getYear() && from.getModel().getMonth() == to.getModel().getMonth())
-		{
-			return "yyyy-MM-dd";
-		}
-		else
-		{
-			return "yyyy-MM";
-		}
-	}
-	
-	public void clearEnterDataPanel()
-	{
-		from.getModel().setValue(null);
-		to.getModel().setValue(null);
-		school.setText("");
-		course.setText("");
-		specialisation.setText("");
-	}
+		ArrayList<Object> eduList = new ArrayList<Object>(objectList);
+		Collections.copy(eduList, objectList);
+		clearEnterDataPanel();
+		objectList.clear();
 
-	@Override
-	public void clearPanel()
-	{
-		clearEnterDataPanel();
-		educationList.clear();
-		((Panel_SavedObjects) savedEducationPanel).clearPanel();
-	}
-	
-	public ArrayList<CV_Education> collectInformation()
-	{		
-		ArrayList<CV_Education> eduList = new ArrayList<CV_Education>(educationList);
-		Collections.copy(eduList, educationList);
-		clearEnterDataPanel();
-		educationList.clear();
-		
 		return eduList;
 	}
 
-	// I:
-	public void insertInformation(ArrayList<CV_Education> list)
+	// D:
+	// Check whether a similar object already exists
+	public boolean doesObjectExist()
 	{
-		educationList = list;
+		String fromDate = from.getJFormattedTextField().getText().replace('-','.');
+		String toDate = from.getJFormattedTextField().getText().replace('-','.');
+		String school = ((JTextField) singleComponents.get(0)).getText();
+		String course = ((JTextField) singleComponents.get(1)).getText();
+		String specialisation = ((JTextField) singleComponents.get(2)).getText();
 
-		for(CV_Education edu : educationList)
+		for(Object object : objectList)
 		{
-			((Panel_SavedObjects) savedEducationPanel).addObjectRepresentationToPanel((Object) edu, edu.toString());
+			CV_Education edu = (CV_Education) object;
+
+			// Compare object fields
+			if(edu.getFrom().equals(fromDate) && edu.getTo().equals(toDate) &&
+					school.equals(edu.getSchool()) && course.equals(edu.getCourse()) &&
+					specialisation.equals(edu.getSpecialisation()))
+				return true;
 		}
+
+		return false;
 	}
 
-	public boolean isPanelcompleted()
+	// I:
+	@Override
+	public void insertInformation(ArrayList<Object> list)
 	{
-		if(from != null)
+		objectList = list;
+
+		for(Object edu : objectList)
 		{
-			if(to != null)
-			{
-				if(school.getText().length() != 0)
-				{
-					if(course.getText().length() != 0)
-					{
-						if(specialisation.getText().length() != 0)
-							return true;
-						else
-							return false;
-					}
-					else
-					{
-						return false;
-					}
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			return false;
+			((Panel_SavedObjects) savedObjectsPanel).addObjectRepresentationToPanel(edu, ((CV_Education) edu).toString());
 		}
 	}
 
 	@Override
-	public boolean isPanelEmpty()
+	public boolean isPanelCompleted()
 	{
-		// Return true, if there are no education objects saved
-		if(educationList.isEmpty())
+		if(from != null && to != null &&
+				((JTextField) singleComponents.get(0)).getText().length() != 0 &&
+				((JTextField) singleComponents.get(1)).getText().length() != 0 &&
+				((JTextField) singleComponents.get(2)).getText().length() != 0)
 			return true;
 		else
 			return false;
 	}
 
-	// P:
-	public void placeElementsInPanel(JPanel panel, GridBagConstraints gc)
+	@Override
+	public Panel_SavedObjects setSavedObjectPanel()
 	{
-		gc.gridx = 0;
-		gc.gridy = 0;
-
-		gc.weightx = 100;
-		gc.weighty = 1;
-
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
-		// First row
-		gc.gridy++;
-		panel.add(fromLabel, gc);
-		gc.gridx = 1;
-		panel.add(toLabel, gc);
-
-		// Second row
-		gc.gridx = 0;
-		gc.gridy++;
-		gc.fill = GridBagConstraints.BOTH;
-		panel.add(from, gc);
-		gc.gridx = 1;
-		panel.add(to, gc);
-
-		gc.gridx = 0;
-		gc.gridwidth = 2;
-
-		// Third row
-		gc.gridy++;
-		gc.fill = GridBagConstraints.NONE;
-		panel.add(schoolLabel, gc);
-
-		// Fourth row
-		gc.gridy++;
-		gc.fill = GridBagConstraints.BOTH;
-		panel.add(school, gc);
-
-		// Fifth row
-		gc.gridy++;
-		gc.fill = GridBagConstraints.NONE;
-		panel.add(courseLabel, gc);
-
-		// Sixth row
-		gc.gridy++;
-		gc.fill = GridBagConstraints.BOTH;
-		panel.add(course, gc);
-
-		// Seventh row
-		gc.gridy++;
-		gc.fill = GridBagConstraints.NONE;
-		panel.add(specialisationLabel, gc);
-
-		// Eighth row
-		gc.gridy++;
-		gc.fill = GridBagConstraints.BOTH;
-		panel.add(specialisation, gc);
-
-		// Ninth row
-		gc.weightx = 1;
-		gc.weighty = 100;
-		gc.gridy++;
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LAST_LINE_END;
-		// Insets create indents - 5 pixels from bottom and from
-		// the right side
-		gc.insets = new Insets(10, 10, 10, 10);
-		panel.add(addButton,gc);
-
-		addButton.addActionListener(new ActionListener()
+		return new Panel_SavedObjects()
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void displayObject(Object object)
 			{
-				String datePattern = chooseDateFormat();
-				SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+				CV_Education edu = (CV_Education) object;
 
-				if(isPanelcompleted())
-				{
-					final CV_Education edu = new CV_Education(
-							dateFormatter.format(from.getModel().getValue()),
-							dateFormatter.format(to.getModel().getValue()),
-							school.getText(),course.getText(),
-							specialisation.getText());
-					educationList.add(edu);
+				from.getJFormattedTextField().setText(edu.getFrom().replace('.','-'));
+				to.getJFormattedTextField().setText(edu.getTo().replace('.','-'));
 
-					// Add education representation to the panel
-					((Panel_SavedObjects) savedEducationPanel).addObjectRepresentationToPanel((Object) edu, edu.toString());
-					// Clear the panel for entering data
-					clearEnterDataPanel();
-				}
-				else
-				{
-					JOptionPane.showMessageDialog(null, "Wypełnij pola dla \"Wykształcenie\"");
-				}
+				((JTextField) singleComponents.get(0)).setText(edu.getSchool());
+				((JTextField) singleComponents.get(1)).setText(edu.getCourse());
+				((JTextField) singleComponents.get(2)).setText(edu.getSpecialisation());
 			}
-		});
+
+			@Override
+			public void hideObject()
+			{
+				from.getJFormattedTextField().setText("");
+				to.getJFormattedTextField().setText("");
+
+				((JTextField) singleComponents.get(0)).setText("");
+				((JTextField) singleComponents.get(1)).setText("");
+				((JTextField) singleComponents.get(2)).setText("");
+			}
+
+			@Override
+			public void removeObject(Object object)
+			{
+				// Remove education object
+				objectList.remove((CV_Education) object);
+			}
+		};
+	}
+
+	@Override
+	public void setOtherComponents()
+	{
+		singleLabels = new ArrayList<>(Arrays.asList(new JLabelStyle("Nazwa uczelni/szkoły"),
+				new JLabelStyle("Kierunek"), new JLabelStyle("Specjalizacja")));
+
+		// JTextFields for school name, course and specialisation
+		singleComponents = new ArrayList<>(Arrays.asList(new JTextFieldStyle(),new JTextFieldStyle(),
+				new JTextFieldStyle()));
 	}
 }

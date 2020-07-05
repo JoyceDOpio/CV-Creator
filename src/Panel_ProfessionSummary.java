@@ -12,7 +12,8 @@ public class Panel_ProfessionSummary extends Panel_Data
 	
 	Panel_ProfessionSummary()
 	{
-		setInnerBorder("Opis");
+		// Panel borders
+		setInnerBorder(" Opis ");
 		setOuterBorder(5,5,5,5);
 		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 		

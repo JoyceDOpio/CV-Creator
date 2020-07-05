@@ -1,9 +1,5 @@
 
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import java.text.SimpleDateFormat;
 
@@ -11,377 +7,179 @@ import java.util.*;
 
 import javax.swing.*;
 
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
-
-//import com.itextpdf.kernel.color.Color;
-
-public class Panel_WorkExperience extends Panel_Data
+public class Panel_WorkExperience extends Panel_Objects
 {
-	JLabel toLabel, fromLabel, titleLabel, workplaceLabel;
-	JDatePickerImpl from, to;
-	JTextField title, workplace;
-	JButton addButton;
-	
-	ArrayList<CV_WorkExperience> workExperienceList;
-	
-	GridBagConstraints enterDataSubPanelgc;
-	// Panels for representing saved work experiences and entering data
-	JPanel savedWorkExperiencePanel, enterDataPanel;
-	final Panel_Duties dutiesPanel;
+	JPanel dutiesPanel;
 
 	Panel_WorkExperience()
 	{
-		setInnerBorder("Doświadczenie zawodowe");
+		// Panel borders
+		setInnerBorder(" Doświadczenie zawodowe ");
 		setOuterBorder(5,5,5,5);
 		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 
-		workExperienceList = new ArrayList<CV_WorkExperience>();
-
-		fromLabel = new JLabelStyle("Od");
-		toLabel = new JLabelStyle("Do");
-		titleLabel = new JLabelStyle("Pełnione stanowisko");
-		workplaceLabel = new JLabelStyle("Miejsce pracy");
+		// A list for work experience objects
+		objectList = new ArrayList<>();
 		
 		dutiesPanel = new Panel_Duties();
-		
-		// We have to create two separate models for two
-		// date pickers
-		UtilDateModel model = new UtilDateModel();
-		UtilDateModel model2 = new UtilDateModel();
-		
-		Properties p = new Properties();
-		p.put("text.today", "Today");
-		p.put("text.month", "Month");
-		p.put("text.year", "Year");
-		
-		// Two separate date panels for variables "from" and "to"
-		JDatePanelImpl fromDatePanel = new JDatePanelImpl(model, p);
-		JDatePanelImpl toDatePanel = new JDatePanelImpl(model2, p);
-				
-		from = new JDatePickerImpl(fromDatePanel, new DateLabelFormatter());
-		to = new JDatePickerImpl(toDatePanel, new DateLabelFormatter());
-		title = new JTextFieldStyle();
-		workplace = new JTextFieldStyle();
-		addButton = new JButtonStyle("Dodaj doświadczenie");
+		setAddButtonText("Dodaj doświadczenie");
 
-		// Layout of the main panel
-		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-
-		// Inner panels for:
-		// - saved work experience
-//		savedWorkExperiencePanel = new JPanel();
-//		savedWorkExperiencePanel.setLayout(new GridBagLayout());
-//		savedWorkExpSubPanelgc = new GridBagConstraints();
-//		// Insets create indents - 5 pixels from bottom and from
-//		// the right side
-//		savedWorkExpSubPanelgc.insets = new Insets(0, 5, 0, 5);
-//		savedWorkExpSubPanelgc.weightx = 50;
-//		savedWorkExpSubPanelgc.weighty = 1;
-//		savedWorkExpSubPanelgc.gridx = 0;
-//		savedWorkExpSubPanelgc.gridy = 0;
-////		add(savedWorkExperiencePanel, gc);
-		savedWorkExperiencePanel = new Panel_SavedObjects()
-		{
-			@Override
-			public void removeObject(Object object)
-			{
-				// Remove work experience object
-				workExperienceList.remove((CV_WorkExperience) object);
-			}
-		};
-		add(savedWorkExperiencePanel);
-		// - enter data
-		enterDataPanel = new JPanel();
-		enterDataPanel.setLayout(new GridBagLayout());
-		enterDataSubPanelgc = new GridBagConstraints();
-		// Insets create indents - 5 pixels from bottom and from
-		// the right side
-		enterDataSubPanelgc.insets = new Insets(0, 5, 0, 5);
-		enterDataSubPanelgc.weightx = 50;
-		enterDataSubPanelgc.weighty = 1;
-		enterDataSubPanelgc.gridx = 0;
-		enterDataSubPanelgc.gridy = 0;
-//		add(enterDataPanel, gc);
-		add(enterDataPanel);
-		// Place in the sub-panel the GUI elements for enetering data
-		placeElementsInPanel(enterDataPanel,enterDataSubPanelgc);
+		// Place in the sub-panel the GUI elements for entering data
+		placeElementsInPanel((Panel_EnterData) enterDataPanel);
 	}
 
-//	// A:
-//	public void addWorkExperienceToPanel(CV_WorkExperience work)
-//	{
-//		savedWorkExpSubPanelgc.fill = GridBagConstraints.BOTH;
-//		savedWorkExpSubPanelgc.anchor = GridBagConstraints.FIRST_LINE_START;
-//		savedWorkExpSubPanelgc.gridx = 0;
-//		savedWorkExpSubPanelgc.gridy++;
-//
-//		String info = work.getFrom() + "-" + work.getTo() + "; " + work.getOccupation() + "; " +
-//				work.getWorkplace();
-//
-//		final JTextField workExperienceField = new JTextFieldStyle(info);
-//		// If the text is longer than the text field, the text fields shows the
-//		// beginning of the text
-//		workExperienceField.setCaretPosition(0);
-//		// Specifies how many columne the text field will occupy
-//		workExperienceField.setColumns(2);
-//		savedWorkExperiencePanel.add(workExperienceField, savedWorkExpSubPanelgc);
-//
-//		final JButton removeButton = new JButtonStyle("Usuń");
-//
-//		removeButton.addActionListener(new ActionListener()
-//		{
-//			public void actionPerformed(ActionEvent e)
-//			{
-//				removeWorkExperience(work, workExperienceField, removeButton);
-//			}
-//		});
-//
-//		savedWorkExpSubPanelgc.gridx = 1;
-//
-//		savedWorkExpSubPanelgc.weightx = 1;
-//		savedWorkExpSubPanelgc.weighty = 100;
-//
-//		savedWorkExpSubPanelgc.fill = GridBagConstraints.VERTICAL;
-//		savedWorkExpSubPanelgc.anchor = GridBagConstraints.FIRST_LINE_END;
-//
-//		savedWorkExperiencePanel.add(removeButton, savedWorkExpSubPanelgc);
-//
-//		// Repaint the panel
-//		savedWorkExperiencePanel.revalidate();  // For JDK 1.7 or above.
-//		savedWorkExperiencePanel.repaint();
-//
-//		// Add the duty field and it's removal button to the
-//		// hash map <-- this will enable us later to remove them
-//		//              all at once
-//		workExpFields.put(workExperienceField, removeButton);
-//	}
-
-	// C:
-	public String chooseDateFormat()
+	@Override
+	public void addAdditionalComponents(Panel_EnterData panel)
 	{
-		if(from.getModel().getYear() == to.getModel().getYear() && from.getModel().getMonth() == to.getModel().getMonth())
+		// Next row
+		panel.gc.gridy++;
+		panel.gc.gridwidth = 2;
+		panel.gc.fill = GridBagConstraints.BOTH;
+		panel.add(dutiesPanel, panel.gc);
+	}
+
+	@Override
+	public void addObject(SimpleDateFormat dateFormatter)
+	{
+		if(isPanelCompleted())
 		{
-			return "yyyy-MM-dd";
+			if(!doesObjectExist())
+			{
+				ArrayList<String> duties = ((Panel_Duties) dutiesPanel).collectInformation();
+
+				final CV_WorkExperience work = new CV_WorkExperience(
+						from.getJFormattedTextField().getText().replace('-','.'),
+						to.getJFormattedTextField().getText().replace('-','.'),
+						((JTextField) singleComponents.get(0)).getText(),
+						((JTextField) singleComponents.get(1)).getText(), duties);
+
+				((Panel_Duties) dutiesPanel).clearPanel();
+
+				objectList.add(work);
+				// Add work experience representation to the panel
+				((Panel_SavedObjects) savedObjectsPanel).addObjectRepresentationToPanel(work, ((CV_WorkExperience) work).toString());
+				// Clear the panel for entering data
+				clearEnterDataPanel();
+			}
+			else
+				JOptionPane.showMessageDialog(null, "Wpis o takich samych danych już istnieje.");
 		}
 		else
 		{
-			return "yyyy-MM";
+			JOptionPane.showMessageDialog(null, "Wypełnij pola dla \"Doświadczenie zawodowe\"");
 		}
 	}
-	
-	public void clearEnterDataPanel()
-	{
-		to.getModel().setValue(null);
-		from.getModel().setValue(null);
-		title.setText("");
-		workplace.setText("");
-	}
 
+	// C:
 	@Override
 	public void clearPanel()
 	{
 		clearEnterDataPanel();
-//		clearSavedWorkExpPanel();
-		workExperienceList.clear();
-		((Panel_SavedObjects) savedWorkExperiencePanel).clearPanel();
-	}
+		objectList.clear();
+		((Panel_SavedObjects) savedObjectsPanel).clearPanel();
 
-//	public void clearSavedWorkExpPanel()
-//	{
-//		for(HashMap.Entry<JTextField, JButton> entry : workExpFields.entrySet())
-//		{
-//			// Remove components from the panel for saved work experiences
-//			savedWorkExperiencePanel.remove(entry.getKey());
-//			savedWorkExperiencePanel.remove(entry.getValue());
-//		}
-//		workExpFields.clear();
-//		workExperienceList.clear();
-//
-//		// Repaint the panel
-//		savedWorkExperiencePanel.revalidate();
-//		savedWorkExperiencePanel.repaint();
-//	}
+		// Clear duties
+		((Panel_Duties) dutiesPanel).clearPanel();
+	}
 	
-	public ArrayList<CV_WorkExperience> collectInformation()
+	public ArrayList<Object> collectInformation()
 	{
-		ArrayList<CV_WorkExperience> workList = new ArrayList<CV_WorkExperience>(workExperienceList);
-		Collections.copy(workList, workExperienceList);
+		ArrayList<Object> workList = new ArrayList<Object>(objectList);
+		Collections.copy(workList, objectList);
 		clearEnterDataPanel();
-		workExperienceList.clear();
-		
+		objectList.clear();
+
 		return workList;
 	}
-	
+
+	// D:
+	// Check whether a similar object already exists
+	public boolean doesObjectExist()
+	{
+		String fromDate = from.getJFormattedTextField().getText().replace('-','.');
+		String toDate = to.getJFormattedTextField().getText().replace('-','.');
+		String occupation = ((JTextField) singleComponents.get(0)).getText();
+		String workplace = ((JTextField) singleComponents.get(1)).getText();
+
+		for(Object object : objectList)
+		{
+			CV_WorkExperience work = (CV_WorkExperience) object;
+
+			if(work.getFrom().equals(fromDate) && work.getTo().equals(toDate) &&
+					occupation.equals(work.getOccupation()) && workplace.equals(work.getWorkplace()))
+				return true;
+		}
+		return false;
+	}
+
 	// I:
 
-	public void insertInformation(ArrayList<CV_WorkExperience> list)
+	@Override
+	public void insertInformation(ArrayList<Object> list)
 	{
-		workExperienceList = list;
+		objectList = list;
 
-		for(CV_WorkExperience work : workExperienceList)
+		for(Object work : objectList)
 		{
-//			addWorkExperienceToPanel(work);
-			((Panel_SavedObjects) savedWorkExperiencePanel).addObjectRepresentationToPanel((Object) work, work.toString());
-		}
-	}
-	
-	public boolean isPanelCompleted()
-	{
-		if(from != null)
-		{
-			if(to != null)
-			{
-				if(title.getText().length() != 0)
-				{
-					if(workplace.getText().length() != 0)
-					{
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			return false;
+			((Panel_SavedObjects) savedObjectsPanel).addObjectRepresentationToPanel(work, ((CV_WorkExperience) work).toString());
 		}
 	}
 
 	@Override
-	public boolean isPanelEmpty()
+	public boolean isPanelCompleted()
 	{
-		// Return true, if there are no work experience
-		// objects saved
-		if(workExperienceList.isEmpty())
+		if(from != null && to != null &&
+				((JTextField) singleComponents.get(0)).getText().length() != 0 &&
+				((JTextField) singleComponents.get(1)).getText().length() != 0)
 			return true;
 		else
 			return false;
 	}
 
-	// P:
-	public void placeElementsInPanel(JPanel panel, GridBagConstraints gc)
+	// S:
+	@Override
+	public Panel_SavedObjects setSavedObjectPanel()
 	{
-		gc.gridx = 0;
-		gc.gridy = 0;
-
-		gc.weightx = 100;
-		gc.weighty = 1;
-
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
-		// First row
-		gc.gridy++;
-		panel.add(fromLabel, gc);
-		gc.gridx = 1;
-		panel.add(toLabel, gc);
-
-		// Second row
-		gc.gridx = 0;
-		gc.gridy++;
-		gc.fill = GridBagConstraints.BOTH;
-		panel.add(from, gc);
-		gc.gridx = 1;
-		panel.add(to, gc);
-
-		gc.gridx = 0;
-
-		// Third row
-		gc.gridy++;
-		gc.fill = GridBagConstraints.NONE;
-		panel.add(titleLabel, gc);
-
-		gc.gridwidth = 2;
-		// Fourth row
-		gc.gridy++;
-		gc.fill = GridBagConstraints.BOTH;
-		panel.add(title, gc);
-
-		// Fifth row
-		gc.gridy++;
-		gc.fill = GridBagConstraints.NONE;
-		panel.add(workplaceLabel, gc);
-
-		// Sixth row
-		gc.gridy++;
-		gc.fill = GridBagConstraints.BOTH;
-		panel.add(workplace, gc);
-
-		// Seventh row
-		gc.gridy++;
-		gc.gridwidth = 2;
-		gc.fill = GridBagConstraints.BOTH;
-		panel.add(dutiesPanel, gc);
-
-		// Eighth row
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LAST_LINE_END;
-		gc.gridy++;
-		// Insets create indents - 5 pixels from bottom and from
-		// the right side
-		gc.insets = new Insets(10, 10, 10, 10);
-		panel.add(addButton,gc);
-
-
-		addButton.addActionListener(new ActionListener()
+		return new Panel_SavedObjects()
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void displayObject(Object object)
 			{
-				String datePattern = chooseDateFormat();
-				SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+				CV_WorkExperience work = (CV_WorkExperience) object;
 
-				if(isPanelCompleted())
-				{
-					ArrayList<String> duties = dutiesPanel.collectInformation();
+				from.getJFormattedTextField().setText(work.getFrom().replace('.','-'));
+				to.getJFormattedTextField().setText(work.getTo().replace('.','-'));
 
-					final CV_WorkExperience work = new CV_WorkExperience(
-							dateFormatter.format(from.getModel().getValue()),
-							dateFormatter.format(to.getModel().getValue()),
-							title.getText(), workplace.getText(), duties);
-
-					dutiesPanel.clearPanel();
-
-					workExperienceList.add(work);
-					// Add work experience representation to the panel
-//					addWorkExperienceToPanel(work);
-//					String text = work.getFrom() + "-" + work.getTo() + "; " + work.getOccupation() + "; " +
-//							work.getWorkplace();
-					((Panel_SavedObjects) savedWorkExperiencePanel).addObjectRepresentationToPanel(work, work.toString());
-
-					// Clear panel for entering data
-					clearEnterDataPanel();
-				}
-				else
-				{
-					JOptionPane.showMessageDialog(null, "Wypełnij pola dla \"Doświadczenie zawodowe\"");
-				}
+				((JTextField) singleComponents.get(0)).setText(work.getOccupation());
+				((JTextField) singleComponents.get(1)).setText(work.getWorkplace());
 			}
-		});
+
+			@Override
+			public void hideObject()
+			{
+				from.getJFormattedTextField().setText("");
+				to.getJFormattedTextField().setText("");
+
+				((JTextField) singleComponents.get(0)).setText("");
+				((JTextField) singleComponents.get(1)).setText("");
+			}
+
+			@Override
+			public void removeObject(Object object)
+			{
+				// Remove work experience object
+				objectList.remove((CV_WorkExperience) object);
+			}
+		};
 	}
-		
-	// R:
-	public void removeWorkExperience(CV_WorkExperience workExp, JTextField field, JButton button)
+
+	@Override
+	public void setOtherComponents()
 	{
-		// Remove work experience object
-		workExperienceList.remove(workExp);
-		// Remove components
-		savedWorkExperiencePanel.remove(field);
-		savedWorkExperiencePanel.remove(button);
-		// Repaint the panel
-		savedWorkExperiencePanel.revalidate();
-		savedWorkExperiencePanel.repaint();
+		singleLabels = new ArrayList<JLabel>(Arrays.asList(new JLabelStyle("Pełnione stanowisko"),
+				new JLabelStyle("Miejsce pracy")));
+
+		singleComponents = new ArrayList<>(Arrays.asList(new JTextFieldStyle(),new JTextFieldStyle()));
 	}
 }
 

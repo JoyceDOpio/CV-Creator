@@ -1,7 +1,8 @@
 
 public class CV_Education
 {
-	String from, to, school, course, specialisation;
+	String from, to;
+	String school, course, specialisation;
 	
 	CV_Education()
 	{
@@ -15,22 +16,14 @@ public class CV_Education
 	
 	CV_Education(String from, String to, String school, String course, String specialisation)
 	{
-		this.from = formatDate(from);
-		this.to = formatDate(to);	
+		this.from = from;
+		this.to = to;
 		this.school = school;
 		this.course = course;
 		this.specialisation = specialisation;		
 	}
-	
-	// F:
-	public String formatDate(String date)
-	{
-		// Replace "-" with "."
-		return date.replace('-','.');
-	}
-	
+
 	// G:
-	
 	public String getCourse(){return course;}
 	
 	public String getFrom(){return from;}
@@ -59,7 +52,7 @@ public class CV_Education
 	public void setSpecialisation(String spec){this.specialisation = spec;}
 	
 	public void setTo(String to){this.to = to;}
-	
+
 	// T:
 	
 	public String toString()

@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -22,7 +21,8 @@ public class Panel_References extends Panel_Data
 	
 	Panel_References()
 	{
-		setInnerBorder("Referencje");
+		// Panel borders
+		setInnerBorder(" Referencje ");
 		setOuterBorder(5,5,5,5);
 		setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
 
@@ -39,28 +39,32 @@ public class Panel_References extends Panel_Data
 		savedReferencesPanel = new Panel_SavedStrings()
 		{
 			@Override
-			public void removeObject(JTextField field)
+			public void displayObject(String text)
+			{
+				// Show reference value in the JButton
+				reference.setText(text);
+			}
+
+			@Override
+			public void hideObject()
+			{
+				reference.setText("");
+			}
+
+			@Override
+//			public void removeObject(JTextField field)
+			public void removeObject(String value)
 			{
 				// Remove reference
-				references.remove(field.getText());
+				references.remove(value);
 			}
 		};
 		add(savedReferencesPanel);
 		// - for entering data
-		enterDataPanel = new JPanel();
-		enterDataPanel.setLayout(new GridBagLayout());
-		enterDataSubPanelgc = new GridBagConstraints();
-		// Insets create indents - 5 pixels from bottom and from
-		// the right side
-		enterDataSubPanelgc.insets = new Insets(0, 5, 0, 5);
-		enterDataSubPanelgc.weightx = 100;
-		enterDataSubPanelgc.weighty = 1;
-		enterDataSubPanelgc.gridx = 0;
-		enterDataSubPanelgc.gridy = 0;
-		enterDataSubPanelgc.gridwidth = 1;
+		enterDataPanel = new Panel_EnterData();
 		add(enterDataPanel);
 		// Place in the sub-panel the GUI elements for entering data
-		placeElementsInPanel(enterDataPanel, enterDataSubPanelgc);
+		placeElementsInPanel((Panel_EnterData) enterDataPanel);
 	}
 
 	// C:
@@ -106,31 +110,31 @@ public class Panel_References extends Panel_Data
 	}
 
 	// P:
-	public void placeElementsInPanel(JPanel panel, GridBagConstraints gc)
+	public void placeElementsInPanel(Panel_EnterData panel)
 	{
-		gc.gridx = 0;
-		gc.gridy = 0;
+		panel.gc.gridx = 0;
+		panel.gc.gridy = 0;
 
-		gc.weightx = 100;
-		gc.weighty = 1;
+		panel.gc.weightx = 100;
+		panel.gc.weighty = 1;
 
-		gc.fill = GridBagConstraints.BOTH;
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+		panel.gc.fill = GridBagConstraints.BOTH;
+		panel.gc.anchor = GridBagConstraints.FIRST_LINE_START;
 
 		// First row
-		gc.gridy++;
-		panel.add(reference, gc);
+		panel.gc.gridy++;
+		panel.add(reference, panel.gc);
 
 		// Second row
-		gc.weightx = 1;
-		gc.weighty = 100;
-		gc.gridy++;
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.LAST_LINE_END;
+		panel.gc.weightx = 1;
+		panel.gc.weighty = 100;
+		panel.gc.gridy++;
+		panel.gc.fill = GridBagConstraints.NONE;
+		panel.gc.anchor = GridBagConstraints.LAST_LINE_END;
 		// Insets create indents - 5 pixels from bottom and from
 		// the right side
-		gc.insets = new Insets(10, 10, 10, 10);
-		panel.add(addReferenceButton, gc);
+		panel.gc.insets = new Insets(10, 10, 10, 10);
+		panel.add(addReferenceButton, panel.gc);
 
 		addReferenceButton.addActionListener(new ActionListener()
 		{
@@ -139,11 +143,19 @@ public class Panel_References extends Panel_Data
 			{
 				if(reference.getText().length() != 0)
 				{
-					references.add(reference.getText());
-					// Add reference representation to the panel
-					((Panel_SavedStrings) savedReferencesPanel).addStringRepresentationToPanel(reference.getText());
+					String value = reference.getText();
 
-					clearEnterDataPanel();
+					// If the array list doesn't contain this value yet
+					if(!references.contains(value))
+					{
+						references.add(reference.getText());
+						// Add reference representation to the panel
+						((Panel_SavedStrings) savedReferencesPanel).addStringRepresentationToPanel(reference.getText());
+
+						clearEnterDataPanel();
+					}
+					else
+						JOptionPane.showMessageDialog(null, "Wpis o takiej nazwie już istnieje.");
 				}
 				else
 				{
