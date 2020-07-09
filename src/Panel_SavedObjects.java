@@ -53,7 +53,7 @@ public abstract class Panel_SavedObjects extends Panel_Data
                 if(((JButtonStyle) objectButton).getClicked())
                     displayObject(object);
                 else
-                    hideObject();
+                    hideObject(object,objectButton);
             }
         });
         // Set preffered size of the button
@@ -107,7 +107,7 @@ public abstract class Panel_SavedObjects extends Panel_Data
     public abstract void displayObject(Object object);
 
     // H:
-    public abstract void hideObject();
+    public abstract void hideObject(Object object, JButton objectButton);
 
     // R:
     public abstract void removeObject(Object object);

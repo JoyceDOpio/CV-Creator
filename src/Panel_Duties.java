@@ -16,10 +16,11 @@ public class Panel_Duties extends Panel_Data
 	JTextField duty;
 	ArrayList<String> duties;
 	JButton addDutyButton;
-	
-	GridBagConstraints enterDataSubPanelgc;
+
 	// Inner panel for organizing saved duties
 	JPanel savedDutiesPanel, enterDataPanel;
+
+	String sameMessage, emptyMessage;
 	
 	Panel_Duties()
 	{
@@ -34,6 +35,9 @@ public class Panel_Duties extends Panel_Data
 		duty = new JTextFieldStyle();
 		addDutyButton = new JButtonStyle("Dodaj obowiązek");
 
+		sameMessage = "Taki obowiązek już istnieje.";
+		emptyMessage = "Wypełnij pole dla \"Obowiązki\".";
+
 		// Layout of the main panel
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		
@@ -41,6 +45,39 @@ public class Panel_Duties extends Panel_Data
 		// - saved duties
 		savedDutiesPanel = new Panel_SavedStrings()
 		{
+			@Override
+			public void displayObject(JButton objectButton)
+			{
+				String value = objectButton.getText();
+
+				// Show reference value in the JButton
+				duty.setText(value);
+			}
+
+			@Override
+			public void hideObject(JButton objectButton)
+			{
+				String value = objectButton.getText();
+
+				// If the user entered different value
+				if(!duty.getText().equals("") && !value.equals(duty.getText()))
+				{
+					if(!duties.contains(duty.getText()))
+					{
+						// Remove the old value
+						removeObject(value);
+						// Save the new value
+						duties.add(duty.getText());
+						// Display new key on the object button
+						objectButton.setText(duty.getText());
+					}
+					else
+						JOptionPane.showMessageDialog(null, sameMessage);
+
+				}
+				duty.setText("");
+			}
+
 			@Override
 			public void removeObject(String value)
 			{
@@ -50,20 +87,10 @@ public class Panel_Duties extends Panel_Data
 		};
 		add(savedDutiesPanel);
 		// - entering data
-		enterDataPanel = new Panel_Data();
-		enterDataPanel.setLayout(new GridBagLayout());
-		enterDataSubPanelgc = new GridBagConstraints();
-		// Insets create indents - 5 pixels from bottom and from
-		// the right side
-		enterDataSubPanelgc.insets = new Insets(5, 5, 5, 5);
-		enterDataSubPanelgc.weightx = 100;
-		enterDataSubPanelgc.weighty = 1;
-		enterDataSubPanelgc.gridx = 0;
-		enterDataSubPanelgc.gridy = 0;
-		enterDataSubPanelgc.gridwidth = 1;
+		enterDataPanel = new Panel_EnterData();
 		add(enterDataPanel);
 		// Place in the sub-panel the GUI elements for enetering data
-		placeElementsInPanel(enterDataPanel, enterDataSubPanelgc);
+		placeElementsInPanel((Panel_EnterData) enterDataPanel);
 	}
 	
 	// C:
@@ -85,32 +112,43 @@ public class Panel_Duties extends Panel_Data
 		return dutyList;
 	}
 
-	// P:
-	public void placeElementsInPanel(JPanel panel, GridBagConstraints gc)
+	// I:
+	public void insertInformation(ArrayList<String> dutyList)
 	{
-		gc.gridx = 0;
-		gc.gridy = 0;
+		setDuties(dutyList);
 
-		gc.weightx = 100;
-		gc.weighty = 1;
+		for(String duty : duties)
+		{
+			((Panel_SavedStrings) savedDutiesPanel).addStringRepresentationToPanel(duty);
+		}
+	}
 
-		gc.fill = GridBagConstraints.NONE;
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
+	// P:
+	public void placeElementsInPanel(Panel_EnterData panel)
+	{
+		panel.gc.gridx = 0;
+		panel.gc.gridy = 0;
+
+		panel.gc.weightx = 100;
+		panel.gc.weighty = 1;
+
+		panel.gc.fill = GridBagConstraints.NONE;
+		panel.gc.anchor = GridBagConstraints.FIRST_LINE_START;
 
 		// First row
-		gc.gridy++;
-		gc.fill = GridBagConstraints.BOTH;
-		panel.add(duty, gc);
+		panel.gc.gridy++;
+		panel.gc.fill = GridBagConstraints.BOTH;
+		panel.add(duty, panel.gc);
 
 		// Second row
-		gc.weightx = 1;
-		gc.weighty = 100;
-		gc.gridy++;
-		gc.fill = GridBagConstraints.NONE;
+		panel.gc.weightx = 1;
+		panel.gc.weighty = 100;
+		panel.gc.gridy++;
+		panel.gc.fill = GridBagConstraints.NONE;
 		// Insets create indents - 5 pixels from bottom and from
 		// the right side
-		gc.insets = new Insets(10, 5, 5, 5);
-		panel.add(addDutyButton,gc);
+		panel.gc.insets = new Insets(10, 5, 5, 5);
+		panel.add(addDutyButton,panel.gc);
 
 		addDutyButton.addActionListener(new ActionListener()
 		{
@@ -126,7 +164,16 @@ public class Panel_Duties extends Panel_Data
 
 					clearEnterDataPanel();
 				}
+				else
+					JOptionPane.showMessageDialog(null, emptyMessage);
 			}
 		});
+	}
+
+	// S:
+	public void setDuties(ArrayList<String> dutyList)
+	{
+		duties = new ArrayList<String>(dutyList);
+		Collections.copy(duties,dutyList);
 	}
 }

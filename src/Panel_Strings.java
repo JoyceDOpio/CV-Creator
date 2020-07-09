@@ -38,18 +38,16 @@ public abstract class Panel_Strings extends Panel_Data
 		{
 		    // Display object in the panel
             @Override
-            public void displayObject(String text)
+            public void displayObject(JButton objectButton)
             {
-                String key = text;
-                String value = strings.get(text);
-                displayInEnterDataPanel(key,value);
+                displayInEnterDataPanel(objectButton);
             }
 
             // Hide object from the panel
             @Override
-            public void hideObject()
+            public void hideObject(JButton objectButton)
             {
-                hideFromEnterDataPanel();
+                hideFromEnterDataPanel(objectButton);
             }
 
             @Override
@@ -100,10 +98,10 @@ public abstract class Panel_Strings extends Panel_Data
     }
 
     // D:
-    public abstract void displayInEnterDataPanel(String key, String value);
+    public abstract void displayInEnterDataPanel(JButton objectButton);
 
     // H:
-    public abstract void hideFromEnterDataPanel();
+    public abstract void hideFromEnterDataPanel(JButton objectButton);
 
     // I:
     public void insertInformation(HashMap<String,String> stringsMap)

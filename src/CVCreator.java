@@ -133,20 +133,20 @@ public class CVCreator extends JFrame
                 {
                     try
                     {
-                    	reader = new PdfReader(fileChooser.getSelectedFile().getAbsolutePath());
-						int numberOfPages = reader.getNumberOfPages();
-						StringBuilder text = new StringBuilder();
+                        reader = new PdfReader(fileChooser.getSelectedFile().getAbsolutePath());
+                        int numberOfPages = reader.getNumberOfPages();
+                        StringBuilder text = new StringBuilder();
 
-						// For every page
-						for(int i = 0; i < numberOfPages; i++)
-						{
-							text.append(PdfTextExtractor.getTextFromPage(reader,i+1));
-							text.append("\n");
-						}
-						// Remove last new line
-						text.delete(text.length()-1,text.length());
+                        // For every page
+                        for(int i = 0; i < numberOfPages; i++)
+                        {
+                            text.append(PdfTextExtractor.getTextFromPage(reader,i+1));
+                            text.append("\n");
+                        }
+                        // Remove last new line
+                        text.delete(text.length()-1,text.length());
 
-						cv = Reader_SimpleTemplate.convertToCV(text);
+                        cv = Reader_SimpleTemplate.convertToCV(text);
 
                         // Clear panels
                         enterDataPanel.clearPanels();
@@ -161,6 +161,7 @@ public class CVCreator extends JFrame
                     }
 				}
 			}
+
         });
         // - Save file menu item
         menuItem3.addActionListener(new ActionListener()

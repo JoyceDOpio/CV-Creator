@@ -4,7 +4,8 @@ import java.util.ArrayList;
 class CV_WorkExperience
 {
 	// Name of the occupation title and the workplace
-	String from, to, occupation, workplace;
+	Date from, to;
+	String occupation, workplace;
 	// Duty range
 	ArrayList<String> duties;
 	
@@ -18,7 +19,7 @@ class CV_WorkExperience
 		duties = new ArrayList<String>();		
 	}
 	
-	CV_WorkExperience(String from, String to, String occupation, String workplace, ArrayList<String> duties)
+	CV_WorkExperience(Date from, Date to, String occupation, String workplace, ArrayList<String> duties)
 	{
 		this.from = from;
 		this.to = to;
@@ -35,11 +36,13 @@ class CV_WorkExperience
 
 	
 	// G:
-	public String getFrom(){return from;}
+	public ArrayList<String> getDuties(){return duties;}
+
+	public Date getFrom(){return from;}
 	
 	public String getOccupation(){return occupation;}
 	
-	public String getTo(){return to;}
+	public Date getTo(){return to;}
 	
 	public String getWorkplace(){return workplace;}
 	
@@ -60,18 +63,18 @@ class CV_WorkExperience
 		this.duties = list;
 	}
 	
-	public void setFrom(String from){this.from = from;}
+	public void setFrom(Date from){this.from = from;}
 	
 	public void setOccupation(String occupation){this.occupation = occupation;}
 	
-	public void setTo(String to){this.to = to;}
+	public void setTo(Date to){this.to = to;}
 	
 	public void setWorkplace(String workplace){this.workplace = workplace;}	
 	
 	// T:
 	public String toString()
 	{	
-		return getFrom() + "-" + getTo() + "; " + getOccupation() + "; " +
+		return getFrom().toString() + "-" + getTo().toString() + "; " + getOccupation() + "; " +
 				getWorkplace();
 	}
 }

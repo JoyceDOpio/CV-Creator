@@ -1,7 +1,7 @@
 
 public class CV_Education
 {
-	String from, to;
+	Date from, to;
 	String school, course, specialisation;
 	
 	CV_Education()
@@ -14,7 +14,7 @@ public class CV_Education
 		specialisation = "";		
 	}
 	
-	CV_Education(String from, String to, String school, String course, String specialisation)
+	CV_Education(Date from, Date to, String school, String course, String specialisation)
 	{
 		this.from = from;
 		this.to = to;
@@ -26,38 +26,44 @@ public class CV_Education
 	// G:
 	public String getCourse(){return course;}
 	
-	public String getFrom(){return from;}
+	public Date getFrom(){return from;}
 	
 	public String getSchool(){return school;} 
 
 	public String getSpecialisation(){return specialisation;}
 
-	public String getTo(){return to;}
+	public Date getTo(){return to;}
 	
 	// I:
 	
 	public String intoText()
 	{
-		return from + " - " + to + "\n" + school + "\n" + course + "\n" + specialisation;
+		return from.toString() + " - " + to.toString() +
+				"\n" + school + "\n" + course + "\n" + specialisation;
 	}
 	
 	// S:
 	
 	public void setCourse(String course){this.course = course;}
 	
-	public void setFrom(String from){this.from = from;}
+	public void setFrom(Date from)
+	{
+		this.from = from;
+	}
 	
 	public void setSchool(String school){this.school = school;}
 	
 	public void setSpecialisation(String spec){this.specialisation = spec;}
 	
-	public void setTo(String to){this.to = to;}
+	public void setTo(Date to)
+	{
+		this.to = to;
+	}
 
 	// T:
-	
 	public String toString()
 	{	
-		return getFrom() + "-" + getTo() + "; " + getCourse() + "; " +
+		return getFrom().toString() + "-" + getTo().toString() + "; " + getCourse() + "; " +
 				getSchool();
 	}
 }

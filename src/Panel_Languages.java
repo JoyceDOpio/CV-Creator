@@ -7,6 +7,8 @@ import javax.swing.*;
 
 public class Panel_Languages extends Panel_Strings
 {
+	String sameMessage;
+
 	Panel_Languages()
 	{
 		// Panel borders
@@ -17,6 +19,8 @@ public class Panel_Languages extends Panel_Strings
 		// A hashmap for languages
 		strings = new HashMap<String, String>();
 
+		sameMessage = "Taki język już istnieje.";
+
 		setAddButtonText("Dodaj język");
 		setMessage("Wypełnij pola dla \"Języki\"");
 
@@ -26,8 +30,11 @@ public class Panel_Languages extends Panel_Strings
 
 	// D:
 	@Override
-	public void displayInEnterDataPanel(String key, String value)
+	public void displayInEnterDataPanel(JButton objectButton)
 	{
+		String key = objectButton.getText();
+		String value = strings.get(key);
+
 		// Language
 		((JTextField)components.get(0)).setText(key);
 		// Level
@@ -35,8 +42,37 @@ public class Panel_Languages extends Panel_Strings
 	}
 
 	@Override
-	public void hideFromEnterDataPanel()
+	public void hideFromEnterDataPanel(JButton objectButton)
 	{
+		String oldKey = objectButton.getText();
+		String newKey = ((JTextField)components.get(0)).getText();
+		String newValue = ((JTextAreaStyle)components.get(1)).getText();
+
+		// If the key has been changed by the user
+		if(!newKey.equals("") && !oldKey.equals(newKey))
+		{
+			if(!strings.containsKey(((JTextField)components.get(0)).getText()))
+			{
+
+				// Remove the old entry
+				strings.remove(oldKey);
+				// Add the new entry
+				strings.put(newKey,newValue);
+				// Display new key on the object button
+				objectButton.setText(newKey);
+			}
+			else
+				JOptionPane.showMessageDialog(null, sameMessage);
+		}
+		else
+		{
+			// If only the value has been changed
+			if(!strings.get(oldKey).equals(newKey))
+			{
+				strings.put(oldKey, newValue);
+			}
+		}
+
 		// Language
 		((JTextField)components.get(0)).setText("");
 		// Level

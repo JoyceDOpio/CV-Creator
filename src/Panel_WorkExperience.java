@@ -1,11 +1,13 @@
-
-import java.awt.GridBagConstraints;
-
-import java.text.SimpleDateFormat;
-
-import java.util.*;
+import org.jdatepicker.impl.JDatePanelImpl;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.jdatepicker.impl.JDatePanelImpl;
+import org.jdatepicker.impl.JDatePickerImpl;
 
 public class Panel_WorkExperience extends Panel_Objects
 {
@@ -39,7 +41,7 @@ public class Panel_WorkExperience extends Panel_Objects
 	}
 
 	@Override
-	public void addObject(SimpleDateFormat dateFormatter)
+	public void addObject()
 	{
 		if(isPanelCompleted())
 		{
@@ -48,8 +50,8 @@ public class Panel_WorkExperience extends Panel_Objects
 				ArrayList<String> duties = ((Panel_Duties) dutiesPanel).collectInformation();
 
 				final CV_WorkExperience work = new CV_WorkExperience(
-						from.getJFormattedTextField().getText().replace('-','.'),
-						to.getJFormattedTextField().getText().replace('-','.'),
+						new Date(from.getModel().getYear(),from.getModel().getMonth(),from.getModel().getDay()),
+						new Date(to.getModel().getYear(),to.getModel().getMonth(),to.getModel().getDay()),
 						((JTextField) singleComponents.get(0)).getText(),
 						((JTextField) singleComponents.get(1)).getText(), duties);
 
@@ -113,7 +115,6 @@ public class Panel_WorkExperience extends Panel_Objects
 	}
 
 	// I:
-
 	@Override
 	public void insertInformation(ArrayList<Object> list)
 	{
@@ -147,21 +148,29 @@ public class Panel_WorkExperience extends Panel_Objects
 			{
 				CV_WorkExperience work = (CV_WorkExperience) object;
 
-				from.getJFormattedTextField().setText(work.getFrom().replace('.','-'));
-				to.getJFormattedTextField().setText(work.getTo().replace('.','-'));
-
 				((JTextField) singleComponents.get(0)).setText(work.getOccupation());
 				((JTextField) singleComponents.get(1)).setText(work.getWorkplace());
+
+				// Clear duties panel from previously displayed duties
+				((Panel_Duties) dutiesPanel).clearPanel();
+				// Show duties
+				showDuties(object);
 			}
 
 			@Override
-			public void hideObject()
+			public void hideObject(Object object, JButton objectButton)
 			{
-				from.getJFormattedTextField().setText("");
-				to.getJFormattedTextField().setText("");
+				// Collect new information
+				((CV_WorkExperience) object).setOccupation(((JTextField) singleComponents.get(0)).getText());
+				((CV_WorkExperience) object).setWorkplace(((JTextField) singleComponents.get(1)).getText());
+				((CV_WorkExperience) object).setDuties(((Panel_Duties) dutiesPanel).collectInformation());
 
-				((JTextField) singleComponents.get(0)).setText("");
-				((JTextField) singleComponents.get(1)).setText("");
+				objectButton.setText(((CV_WorkExperience) object).toString());
+
+				// Clear the panel for entering data
+				clearEnterDataPanel();
+				// Clear duties panel
+				((Panel_Duties) dutiesPanel).clearPanel();
 			}
 
 			@Override
@@ -180,6 +189,12 @@ public class Panel_WorkExperience extends Panel_Objects
 				new JLabelStyle("Miejsce pracy")));
 
 		singleComponents = new ArrayList<>(Arrays.asList(new JTextFieldStyle(),new JTextFieldStyle()));
+	}
+
+	public void showDuties(Object object)
+	{
+		CV_WorkExperience work = (CV_WorkExperience) object;
+		((Panel_Duties) dutiesPanel).insertInformation(work.getDuties());
 	}
 }
 

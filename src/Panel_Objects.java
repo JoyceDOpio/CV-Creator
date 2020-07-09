@@ -19,6 +19,11 @@ public abstract class Panel_Objects extends Panel_Data
 {
     JLabel toLabel, fromLabel;
     JDatePickerImpl from, to;
+    UtilDateModel modelFrom;
+    UtilDateModel modelTo;
+    Properties p;
+    SimpleDateFormat dateFormatter;
+    String datePattern;
 
     ArrayList<JLabel> singleLabels;
     ArrayList<JComponent> singleComponents;
@@ -42,20 +47,23 @@ public abstract class Panel_Objects extends Panel_Data
 
         // We have to create two separate models for two
         // date pickers
-        UtilDateModel model = new UtilDateModel();
-        UtilDateModel model2 = new UtilDateModel();
+        modelFrom = new UtilDateModel();
+        modelTo = new UtilDateModel();
 
-        Properties p = new Properties();
+        p = new Properties();
         p.put("text.today", "Today");
         p.put("text.month", "Month");
         p.put("text.year", "Year");
 
         // Two separate date panels for variables "from" and "to"
-        JDatePanelImpl fromDatePanel = new JDatePanelImpl(model, p);
-        JDatePanelImpl toDatePanel2 = new JDatePanelImpl(model2, p);
+        JDatePanelImpl fromDatePanel = new JDatePanelImpl(modelFrom, p);
+        JDatePanelImpl toDatePanel2 = new JDatePanelImpl(modelTo, p);
 
         from = new JDatePickerImpl(fromDatePanel, new DateLabelFormatter());
         to = new JDatePickerImpl(toDatePanel2, new DateLabelFormatter());
+
+        datePattern =  "yyyy-MM-dd";
+        dateFormatter = new SimpleDateFormat(datePattern);
 
         addButton = new JButtonStyle("");
 
@@ -71,7 +79,7 @@ public abstract class Panel_Objects extends Panel_Data
     // A:
     public abstract void addAdditionalComponents(Panel_EnterData panel);
 
-    public abstract void addObject(SimpleDateFormat dateFormatter);
+    public abstract void addObject();
 
     // C:
     public String chooseDateFormat()
@@ -96,7 +104,6 @@ public abstract class Panel_Objects extends Panel_Data
             if(singleComponents.get(i) instanceof JTextField)
                 ((JTextField) singleComponents.get(i)).setText("");
         }
-
     }
 
     @Override
@@ -194,11 +201,8 @@ public abstract class Panel_Objects extends Panel_Data
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                String datePattern =  "yyyy-MM-dd";
-                SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
-
                 // Create and add object
-                addObject(dateFormatter);
+                addObject();
             }
         });
     }

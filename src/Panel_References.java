@@ -13,11 +13,12 @@ public class Panel_References extends Panel_Data
 {
 	JTextField reference;
 	JButton addReferenceButton;
-	
-	GridBagConstraints enterDataSubPanelgc;
+
 	// Inner panel for organizing references layout
 	JPanel savedReferencesPanel, enterDataPanel;
 	ArrayList<String> references;
+
+	String sameMessage, emptyMessage;
 	
 	Panel_References()
 	{
@@ -31,6 +32,9 @@ public class Panel_References extends Panel_Data
 		reference = new JTextField();
 		addReferenceButton = new JButtonStyle("Dodaj referencję");
 
+		sameMessage = "Taka referencja już istnieje.";
+		emptyMessage = "Wypełnij pole dla \"Referencje\".";
+
 		// Layout of the main panel
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		
@@ -39,20 +43,38 @@ public class Panel_References extends Panel_Data
 		savedReferencesPanel = new Panel_SavedStrings()
 		{
 			@Override
-			public void displayObject(String text)
+			public void displayObject(JButton objectButton)
 			{
+				String value = objectButton.getText();
+
 				// Show reference value in the JButton
-				reference.setText(text);
+				reference.setText(value);
 			}
 
 			@Override
-			public void hideObject()
+			public void hideObject(JButton objectButton)
 			{
+				String value = objectButton.getText();
+
+				// If the user entered different value
+				if(!reference.getText().equals("") && !value.equals(reference.getText()))
+				{
+					if(!references.contains(reference.getText()))
+					{
+						// Remove the old value
+						removeObject(value);
+						// Save the new value
+						references.add(reference.getText());
+						// Display new key on the object button
+						objectButton.setText(reference.getText());
+					}
+					else
+						JOptionPane.showMessageDialog(null, sameMessage);
+				}
 				reference.setText("");
 			}
 
 			@Override
-//			public void removeObject(JTextField field)
 			public void removeObject(String value)
 			{
 				// Remove reference
@@ -155,11 +177,11 @@ public class Panel_References extends Panel_Data
 						clearEnterDataPanel();
 					}
 					else
-						JOptionPane.showMessageDialog(null, "Wpis o takiej nazwie już istnieje.");
+						JOptionPane.showMessageDialog(null, sameMessage);
 				}
 				else
 				{
-					JOptionPane.showMessageDialog(null, "Wypełnij pole dla \"Referencje\"");
+					JOptionPane.showMessageDialog(null, emptyMessage);
 				}
 			}
 		});

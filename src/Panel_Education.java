@@ -29,15 +29,15 @@ public class Panel_Education extends Panel_Objects
 	public void addAdditionalComponents(Panel_EnterData panel){}
 
 	@Override
-	public void addObject(SimpleDateFormat dateFormatter)
+	public void addObject()
 	{
 		if(isPanelCompleted())
 		{
 			if(!doesObjectExist())
 			{
 				final CV_Education edu = new CV_Education(
-						from.getJFormattedTextField().getText().replace('-','.'),
-						to.getJFormattedTextField().getText().replace('-','.'),
+						new Date(from.getModel().getYear(),from.getModel().getMonth(),from.getModel().getDay()),
+						new Date(to.getModel().getYear(),to.getModel().getMonth(),to.getModel().getDay()),
 						// School name
 						((JTextField) singleComponents.get(0)).getText(),
 						// Course
@@ -86,7 +86,6 @@ public class Panel_Education extends Panel_Objects
 		{
 			CV_Education edu = (CV_Education) object;
 
-			// Compare object fields
 			if(edu.getFrom().equals(fromDate) && edu.getTo().equals(toDate) &&
 					school.equals(edu.getSchool()) && course.equals(edu.getCourse()) &&
 					specialisation.equals(edu.getSpecialisation()))
@@ -130,23 +129,22 @@ public class Panel_Education extends Panel_Objects
 			{
 				CV_Education edu = (CV_Education) object;
 
-				from.getJFormattedTextField().setText(edu.getFrom().replace('.','-'));
-				to.getJFormattedTextField().setText(edu.getTo().replace('.','-'));
-
 				((JTextField) singleComponents.get(0)).setText(edu.getSchool());
 				((JTextField) singleComponents.get(1)).setText(edu.getCourse());
 				((JTextField) singleComponents.get(2)).setText(edu.getSpecialisation());
 			}
 
 			@Override
-			public void hideObject()
+			public void hideObject(Object object, JButton objectButton)
 			{
-				from.getJFormattedTextField().setText("");
-				to.getJFormattedTextField().setText("");
+				((CV_Education) object).setSchool(((JTextField) singleComponents.get(0)).getText());
+				((CV_Education) object).setCourse(((JTextField) singleComponents.get(1)).getText());
+				((CV_Education) object).setSpecialisation(((JTextField) singleComponents.get(2)).getText());
 
-				((JTextField) singleComponents.get(0)).setText("");
-				((JTextField) singleComponents.get(1)).setText("");
-				((JTextField) singleComponents.get(2)).setText("");
+				objectButton.setText(((CV_Education) object).toString());
+
+				// Clear panel for entering data
+				clearEnterDataPanel();
 			}
 
 			@Override

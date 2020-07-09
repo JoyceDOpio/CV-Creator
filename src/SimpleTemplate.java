@@ -103,7 +103,7 @@ public class SimpleTemplate extends Document
 				add(p);
 				p = new Paragraph(text, font);
 				add(p);
-				// If adding the paragraph was successfull,
+				// If adding the paragraph was successful,
 				// return true
 				return true;
 			}
@@ -139,7 +139,7 @@ public class SimpleTemplate extends Document
 				add(p);
 				p = new Paragraph(text, font);
 				add(p);
-				// If adding the paragraph was successfull,
+				// If adding the paragraph was successful,
 				// return true
 				return true;
 			}
@@ -174,7 +174,7 @@ public class SimpleTemplate extends Document
 				add(title);
 				Paragraph content = new Paragraph(text);
 				add(content);
-				// If adding the paragraph was successfull,
+				// If adding the paragraph was successful,
 				// return true
 				return true;
 			}
@@ -203,7 +203,7 @@ public class SimpleTemplate extends Document
 				Paragraph p = new Paragraph(text, bigFont);
 				p.setAlignment(Paragraph.ALIGN_CENTER);
 				add(p);
-				// If adding the paragraph was successfull,
+				// If adding the paragraph was successful,
 				// return true
 				return true;
 			}
@@ -250,7 +250,7 @@ public class SimpleTemplate extends Document
 				Paragraph p = new Paragraph(text, font);
 				p.setAlignment(Paragraph.ALIGN_CENTER);
 				add(p);
-				// If adding the paragraph was successfull,
+				// If adding the paragraph was successful,
 				// return true
 				return true;
 			}
@@ -274,7 +274,7 @@ public class SimpleTemplate extends Document
 				Paragraph p = new Paragraph("\n" + cv.professionSummary + "\n", font);
 				p.setAlignment(Paragraph.ALIGN_JUSTIFIED);
 				add(p);
-				// If adding the paragraph was successfull,
+				// If adding the paragraph was successful,
 				// return true
 				return true;
 			}
@@ -307,7 +307,7 @@ public class SimpleTemplate extends Document
 				p = new Paragraph(text, font);
 				p.setAlignment(Paragraph.ALIGN_JUSTIFIED);
 				add(p);
-				// If adding the paragraph was successfull,
+				// If adding the paragraph was successful,
 				// return true
 				return true;
 			}
@@ -340,7 +340,7 @@ public class SimpleTemplate extends Document
 				add(p);
 				p = new Paragraph(text);
 				add(p);
-				// If adding the paragraph was successfull,
+				// If adding the paragraph was successful,
 				// return true
 				return true;
 			}
@@ -363,11 +363,11 @@ public class SimpleTemplate extends Document
 			// For every work experience in the list
 			for(Object work : cv.workExp)
 			{
-				String fromDate = ((CV_WorkExperience) work).getFrom();
-				String toDate = ((CV_WorkExperience) work).getTo();
+				String fromDate = ((CV_WorkExperience) work).getFrom().toString();
+				String toDate = ((CV_WorkExperience) work).getTo().toString();
 
-				text = text + fromDate.replace('-','.') + " - " + toDate.replace('-','.') +
-						"\n" + ((CV_WorkExperience) work).occupation + "\n" + ((CV_WorkExperience) work).workplace + "\n";
+				text = text + fromDate + " - " + toDate + "\n" + ((CV_WorkExperience) work).occupation +
+						"\n" + ((CV_WorkExperience) work).workplace + "\n";
 
 				for(String duty : ((CV_WorkExperience) work).duties)
 				{
@@ -386,7 +386,7 @@ public class SimpleTemplate extends Document
 				add(p);
 				p = new Paragraph(text, font);
 				add(p);
-				// If adding the paragraph was successfull,
+				// If adding the paragraph was successful,
 				// return true
 				return true;
 			}

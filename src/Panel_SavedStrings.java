@@ -52,9 +52,9 @@ public abstract class Panel_SavedStrings extends Panel_Data
                 ((JButtonStyle) objectButton).click();
 
                 if(((JButtonStyle) objectButton).getClicked())
-                    displayObject(key);
+                    displayObject(objectButton);
                 else
-                    hideObject();
+                    hideObject(objectButton);
             }
         });
         // Set preffered size of the button
@@ -106,10 +106,10 @@ public abstract class Panel_SavedStrings extends Panel_Data
     }
 
     // D:
-    public void displayObject(String key){}
+    public abstract void displayObject(JButton objectButton);
 
     // H:
-    public void hideObject(){}
+    public abstract void hideObject(JButton objectButton);
 
     // R:
     // The String in the HashMap is the object
