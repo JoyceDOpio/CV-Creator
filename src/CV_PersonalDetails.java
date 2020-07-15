@@ -15,7 +15,6 @@ public class CV_PersonalDetails
 	}
 	
 	// G:
-	
 	public String getCountry(){return country;}
 
 	public String getEmail(){return email;}
@@ -32,7 +31,6 @@ public class CV_PersonalDetails
 
 	
 	// S:
-	
 	public void setCountry(String country){this.country = country;}
 	
 	public void setEmail(String email){this.email = email;}

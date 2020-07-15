@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import javax.swing.*;
 
-public class Panel_Languages extends Panel_Strings
+public class Panel_Languages extends Panel_StringHashMap
 {
 	String sameMessage;
 
@@ -21,8 +21,9 @@ public class Panel_Languages extends Panel_Strings
 
 		sameMessage = "Taki język już istnieje.";
 
+		setEmptyMessage("Wypełnij pola dla \"Języki\".");
+		setSameMessage("Taki język został już zapisany.");
 		setAddButtonText("Dodaj język");
-		setMessage("Wypełnij pola dla \"Języki\"");
 
 		// Place in the sub-panel the GUI elements for entering data
 		placeElementsInPanel((Panel_EnterData) enterDataPanel);
@@ -46,7 +47,7 @@ public class Panel_Languages extends Panel_Strings
 	{
 		String oldKey = objectButton.getText();
 		String newKey = ((JTextField)components.get(0)).getText();
-		String newValue = ((JTextAreaStyle)components.get(1)).getText();
+		String newValue = ((JTextField)components.get(1)).getText();
 
 		// If the key has been changed by the user
 		if(!newKey.equals("") && !oldKey.equals(newKey))

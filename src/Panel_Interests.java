@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import javax.swing.*;
 
-public class Panel_Interests extends Panel_Strings
+public class Panel_Interests extends Panel_StringHashMap
 {
 	String sameMessage;
 
@@ -20,8 +20,9 @@ public class Panel_Interests extends Panel_Strings
 		strings = new HashMap<String, String>();
 		sameMessage = "Takie zainteresowanie już istnieje.";
 
+		setEmptyMessage("Wypełnij pola dla \"Zainteresowania\".");
+		setSameMessage("Takie zainteresowanie zostało już zapisane.");
 		setAddButtonText("Dodaj zainteresowanie");
-		setMessage("Wypełnij pola dla \"Zainteresowania\"");
 
 		// Place in the sub-panel the GUI elements for entering data
 		placeElementsInPanel((Panel_EnterData) enterDataPanel);
@@ -52,7 +53,6 @@ public class Panel_Interests extends Panel_Strings
 		{
 			if(!strings.containsKey(((JTextField)components.get(0)).getText()))
 			{
-
 				// Remove the old entry
 				strings.remove(oldKey);
 				// Add the new entry

@@ -1,6 +1,6 @@
 public class Date
 {
-    private int year, month, day;
+    private int year, month, day = 1;
 
     Date(int year, int month, int day)
     {
@@ -15,11 +15,7 @@ public class Date
         this.month = month;
     }
 
-    Date()
-    {
-    }
-
-    // C:
+    // A:
     public boolean areDatesTheSame(Date date)
     {
         if(date.getYear() == this.year &&
@@ -28,6 +24,23 @@ public class Date
             return true;
         else
             return false;
+    }
+
+    // C:
+    public static Date createDateBasedOnString(String date)
+    {
+        if(date.split("\\.").length == 3)
+        {
+            return new Date(Integer.parseInt(date.split("\\.")[0]),
+                    Integer.parseInt(date.split("\\.")[1]),
+                    Integer.parseInt(date.split("\\.")[2]));
+        }
+        else if(date.split("\\.").length == 2)
+        {
+            return new Date(Integer.parseInt(date.split("\\.")[0]),
+                    Integer.parseInt(date.split("\\.")[1]));
+        }
+        else return null;
     }
 
     // F:
@@ -46,19 +59,9 @@ public class Date
 
     public int getYear(){return year;}
 
-    // S:
-    public void setDay(int day){this.day = day;}
-
-    public void setMonth(int month){this.month = month;}
-
-    public void setYear(int year){this.year = year;}
-
     // T:
     public String toString()
     {
-        if (day != 0)
-            return year + "." + formatNumber(month) + "." + formatNumber(day);
-        else
-            return year + "." + formatNumber(month);
+        return year + "." + formatNumber(month) + "." + formatNumber(day);
     }
 }

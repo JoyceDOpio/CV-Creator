@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 class CV_WorkExperience
 {
@@ -46,21 +47,13 @@ class CV_WorkExperience
 	
 	public String getWorkplace(){return workplace;}
 	
-	// R:
-	public void removeDuty(int index)
-	{
-		duties.remove(index);
-	}
-	
-	public void removeDuty(String duty)
-	{
-		duties.remove(duty);
-	}
-	
 	// S:
 	public void setDuties(ArrayList<String> list)
 	{
-		this.duties = list;
+//		duties = new ArrayList<String>(list);
+//		Collections.copy(duties, list);// <-- ALWAYS COPY - NEVER use the array of interest
+		                               //     directly, because it changes it's content
+		duties = list;
 	}
 	
 	public void setFrom(Date from){this.from = from;}

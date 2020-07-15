@@ -7,14 +7,12 @@ import java.util.HashMap;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfWriter;
-//import com.itextpdf.kernel.pdf.PdfWriter;
 
 public class SimpleTemplate extends Document 
-{	
+{
 	BaseFont baseFont = null;{
 		try 
 		{
@@ -28,8 +26,7 @@ public class SimpleTemplate extends Document
 		}  
 	}
 	
-	Font font = new Font(baseFont, 12); 
-	Font boldFont = new Font(baseFont, 12, Font.BOLD);
+	Font font = new Font(baseFont, 12);
 	Font bigFont = new Font(baseFont, 18);
 	Font mediumFont = new Font(baseFont, 14);
 	
@@ -43,38 +40,29 @@ public class SimpleTemplate extends Document
 	}
 	
 	// B:
-	
 	public void buildCV()
 	{
         // Open document
         open();
         
-        // Add content
-		// Names
+        // Add content:
+		// - Names
 		buildName();
-
-		// Personal details
+		// - Personal details
 		buildPersonalDetails();
-
-		// Profession summary
+		// - Profession summary
 		buildProfessionSummary();
-
-		// Work Experience
+		// - Work Experience
 		buildWorkExp();
-
-		// Education
+		// - Education
 		buildEducation();
-
-		// Skills
+		// - Skills
 		buildSkills();
-
-		// Languages
+		// - Languages
 		buildLanguages();
-
-		// Interests
+		// - Interests
 		buildInterests();
-
-		// References
+		// - References
 		buildReferences();
 
         // Close document
@@ -340,7 +328,7 @@ public class SimpleTemplate extends Document
 				add(p);
 				p = new Paragraph(text);
 				add(p);
-				// If adding the paragraph was successful,
+				// If adding the paragraph was successfull,
 				// return true
 				return true;
 			}
@@ -360,6 +348,7 @@ public class SimpleTemplate extends Document
 		if(!cv.workExp.isEmpty())
 		{
 			String text = "";
+
 			// For every work experience in the list
 			for(Object work : cv.workExp)
 			{
@@ -386,7 +375,7 @@ public class SimpleTemplate extends Document
 				add(p);
 				p = new Paragraph(text, font);
 				add(p);
-				// If adding the paragraph was successful,
+				// If adding the paragraph was successfull,
 				// return true
 				return true;
 			}

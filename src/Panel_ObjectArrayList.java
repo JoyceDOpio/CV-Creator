@@ -3,27 +3,23 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.text.SimpleDateFormat;
-
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.*;
 
 import javax.swing.*;
 
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 
-// A panel that displays information saved as objects, i.e. in the
-// form of the work experience object and the education object
-public abstract class Panel_Objects extends Panel_Data
+// A panel that displays information saved as ArrayList<Object>,
+// i.e. in the form of the work experience object and the education object
+public abstract class Panel_ObjectArrayList extends Panel_Data
 {
     JLabel toLabel, fromLabel;
-    JDatePickerImpl from, to;
-    UtilDateModel modelFrom;
-    UtilDateModel modelTo;
-    Properties p;
-    SimpleDateFormat dateFormatter;
-    String datePattern;
+
+    DatePicker from ,to;
+    DatePickerSettings fromDateSettings, toDateSettings;
 
     ArrayList<JLabel> singleLabels;
     ArrayList<JComponent> singleComponents;
@@ -34,7 +30,7 @@ public abstract class Panel_Objects extends Panel_Data
 
     JPanel savedObjectsPanel, enterDataPanel;
 
-    Panel_Objects()
+    Panel_ObjectArrayList()
     {
         // Layout of the main panel
         setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -45,25 +41,18 @@ public abstract class Panel_Objects extends Panel_Data
         // so they have to be specifically set
         setOtherComponents();
 
-        // We have to create two separate models for two
-        // date pickers
-        modelFrom = new UtilDateModel();
-        modelTo = new UtilDateModel();
-
-        p = new Properties();
-        p.put("text.today", "Today");
-        p.put("text.month", "Month");
-        p.put("text.year", "Year");
-
-        // Two separate date panels for variables "from" and "to"
-        JDatePanelImpl fromDatePanel = new JDatePanelImpl(modelFrom, p);
-        JDatePanelImpl toDatePanel2 = new JDatePanelImpl(modelTo, p);
-
-        from = new JDatePickerImpl(fromDatePanel, new DateLabelFormatter());
-        to = new JDatePickerImpl(toDatePanel2, new DateLabelFormatter());
-
-        datePattern =  "yyyy-MM-dd";
-        dateFormatter = new SimpleDateFormat(datePattern);
+        // Date picker settings:
+        // - from
+        fromDateSettings = new DatePickerSettings();
+        fromDateSettings.setFirstDayOfWeek(DayOfWeek.MONDAY);
+        fromDateSettings.setFormatForDatesCommonEra("yyyy-MM-dd");
+        // - to
+        toDateSettings = new DatePickerSettings();
+        toDateSettings.setFirstDayOfWeek(DayOfWeek.MONDAY);
+        toDateSettings.setFormatForDatesCommonEra("yyyy-MM-dd");
+        // Date pickers
+        from = new DatePicker(fromDateSettings);
+        to = new DatePicker(toDateSettings);
 
         addButton = new JButtonStyle("");
 
@@ -82,22 +71,11 @@ public abstract class Panel_Objects extends Panel_Data
     public abstract void addObject();
 
     // C:
-    public String chooseDateFormat()
-    {
-        if(from.getModel().getYear() == to.getModel().getYear() && from.getModel().getMonth() == to.getModel().getMonth())
-        {
-            return "yyyy-MM-dd";
-        }
-        else
-        {
-            return "yyyy-MM";
-        }
-    }
-
     public void clearEnterDataPanel()
     {
-        from.getModel().setValue(null);
-        to.getModel().setValue(null);
+        // Clear the date picker text
+        from.clear();
+        to.clear();
 
         for(int i = 0; i < singleComponents.size(); i++)
         {
@@ -124,7 +102,7 @@ public abstract class Panel_Objects extends Panel_Data
     @Override
     public boolean isPanelEmpty()
     {
-        // Return true, if there are no education objects saved
+        // Return true, if there are no objects saved
         if(objectList.isEmpty())
             return true;
         else
@@ -213,9 +191,27 @@ public abstract class Panel_Objects extends Panel_Data
         addButton.setText(text);
     }
 
-    public abstract Panel_SavedObjects setSavedObjectPanel();
+    public void setFrom(Date date)
+    {
+        int year = date.getYear();
+        int month = date.getMonth();
+        int day = date.getDay();
+
+        from.setDate(LocalDate.of(year, month, day));
+    }
 
     public abstract void setOtherComponents();
+
+    public abstract Panel_SavedObjects setSavedObjectPanel();
+
+    public void setTo(Date date)
+    {
+        int year = date.getYear();
+        int month = date.getMonth();
+        int day = date.getDay();
+
+        to.setDate(LocalDate.of(year, month, day));
+    }
 }
 
 

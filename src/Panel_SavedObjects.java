@@ -51,7 +51,16 @@ public abstract class Panel_SavedObjects extends Panel_Data
                 ((JButtonStyle) objectButton).click();
 
                 if(((JButtonStyle) objectButton).getClicked())
+                {
+                    // Turn "off" all other object buttons - in case the user has
+                    // already clicked on a different object button
+                    for(HashMap.Entry<JButton, JButton> entry : objectFields.entrySet())
+                    {
+                        if(!entry.getKey().equals(objectButton))
+                            ((JButtonStyle) entry.getKey()).setClicked(false);
+                    }
                     displayObject(object);
+                }
                 else
                     hideObject(object,objectButton);
             }

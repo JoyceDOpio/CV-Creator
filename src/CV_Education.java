@@ -25,7 +25,7 @@ public class CV_Education
 
 	// G:
 	public String getCourse(){return course;}
-	
+
 	public Date getFrom(){return from;}
 	
 	public String getSchool(){return school;} 
@@ -35,7 +35,6 @@ public class CV_Education
 	public Date getTo(){return to;}
 	
 	// I:
-	
 	public String intoText()
 	{
 		return from.toString() + " - " + to.toString() +
@@ -43,9 +42,8 @@ public class CV_Education
 	}
 	
 	// S:
-	
 	public void setCourse(String course){this.course = course;}
-	
+
 	public void setFrom(Date from)
 	{
 		this.from = from;
@@ -54,7 +52,7 @@ public class CV_Education
 	public void setSchool(String school){this.school = school;}
 	
 	public void setSpecialisation(String spec){this.specialisation = spec;}
-	
+
 	public void setTo(Date to)
 	{
 		this.to = to;

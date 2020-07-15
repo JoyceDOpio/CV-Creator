@@ -7,9 +7,9 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-// A panel that displays information saved in the form of String,
-// such as skills, languages, and interests
-public abstract class Panel_Strings extends Panel_Data
+// A panel that displays information saved in the form of
+// HashMap<String, String>, such as skills, languages, and interests
+public abstract class Panel_StringHashMap extends Panel_Data
 {
     ArrayList<JLabel> labels;
     ArrayList<JComponent> components;
@@ -22,9 +22,9 @@ public abstract class Panel_Strings extends Panel_Data
 
     // Message to be displayed when not all information has been
     // provided
-    String message;
+    String sameMessage, emptyMessage;
 
-    Panel_Strings()
+    Panel_StringHashMap()
     {
         // Layout of the main panel
         setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
@@ -191,12 +191,12 @@ public abstract class Panel_Strings extends Panel_Data
                         clearEnterDataPanel();
                     }
                     else
-                        JOptionPane.showMessageDialog(null, "Wpis o takiej nazwie już istnieje.");
+                        JOptionPane.showMessageDialog(null, sameMessage);
 
                 }
                 else
                 {
-                    JOptionPane.showMessageDialog(null, message);
+                    JOptionPane.showMessageDialog(null, emptyMessage);
                 }
             }
         });
@@ -209,10 +209,17 @@ public abstract class Panel_Strings extends Panel_Data
         addButton.setText(text);
     }
 
-    public void setMessage(String text)
+    public void setEmptyMessage(String text)
     {
-        message = text;
+        emptyMessage = text;
     }
 
+    public void setSameMessage(String text)
+    {
+        sameMessage = text;
+    }
+
+    // A method to define other JPanel components such as JLabels,
+    // JTextFields and JTextAreas
     public abstract void setOtherComponents();
 }

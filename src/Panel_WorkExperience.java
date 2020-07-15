@@ -1,17 +1,14 @@
-import org.jdatepicker.impl.JDatePanelImpl;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-
-public class Panel_WorkExperience extends Panel_Objects
+public class Panel_WorkExperience extends Panel_ObjectArrayList
 {
 	JPanel dutiesPanel;
+
+	String emptyMessage, sameMessage;
 
 	Panel_WorkExperience()
 	{
@@ -24,6 +21,9 @@ public class Panel_WorkExperience extends Panel_Objects
 		objectList = new ArrayList<>();
 		
 		dutiesPanel = new Panel_Duties();
+
+		emptyMessage = "Wypełnij pola dla \"Doświadczenie zawodowe\"";
+		sameMessage = "Wpis o takich samych danych już istnieje.";
 		setAddButtonText("Dodaj doświadczenie");
 
 		// Place in the sub-panel the GUI elements for entering data
@@ -50,8 +50,8 @@ public class Panel_WorkExperience extends Panel_Objects
 				ArrayList<String> duties = ((Panel_Duties) dutiesPanel).collectInformation();
 
 				final CV_WorkExperience work = new CV_WorkExperience(
-						new Date(from.getModel().getYear(),from.getModel().getMonth(),from.getModel().getDay()),
-						new Date(to.getModel().getYear(),to.getModel().getMonth(),to.getModel().getDay()),
+						new Date(from.getDate().getYear(),from.getDate().getMonthValue(),from.getDate().getDayOfMonth()),
+						new Date(to.getDate().getYear(),to.getDate().getMonthValue(),to.getDate().getDayOfMonth()),
 						((JTextField) singleComponents.get(0)).getText(),
 						((JTextField) singleComponents.get(1)).getText(), duties);
 
@@ -64,11 +64,11 @@ public class Panel_WorkExperience extends Panel_Objects
 				clearEnterDataPanel();
 			}
 			else
-				JOptionPane.showMessageDialog(null, "Wpis o takich samych danych już istnieje.");
+				JOptionPane.showMessageDialog(null, sameMessage);
 		}
 		else
 		{
-			JOptionPane.showMessageDialog(null, "Wypełnij pola dla \"Doświadczenie zawodowe\"");
+			JOptionPane.showMessageDialog(null, emptyMessage);
 		}
 	}
 
@@ -98,8 +98,11 @@ public class Panel_WorkExperience extends Panel_Objects
 	// Check whether a similar object already exists
 	public boolean doesObjectExist()
 	{
-		String fromDate = from.getJFormattedTextField().getText().replace('-','.');
-		String toDate = to.getJFormattedTextField().getText().replace('-','.');
+		Date fromDate = new Date(from.getDate().getYear(),
+				from.getDate().getMonthValue(),from.getDate().getDayOfMonth());
+		Date toDate = new Date(to.getDate().getYear(),
+				to.getDate().getMonthValue(),to.getDate().getDayOfMonth());
+
 		String occupation = ((JTextField) singleComponents.get(0)).getText();
 		String workplace = ((JTextField) singleComponents.get(1)).getText();
 
@@ -107,8 +110,10 @@ public class Panel_WorkExperience extends Panel_Objects
 		{
 			CV_WorkExperience work = (CV_WorkExperience) object;
 
-			if(work.getFrom().equals(fromDate) && work.getTo().equals(toDate) &&
-					occupation.equals(work.getOccupation()) && workplace.equals(work.getWorkplace()))
+			if(work.getFrom().areDatesTheSame(fromDate) &&
+					work.getTo().areDatesTheSame(toDate) &&
+					occupation.equals(work.getOccupation()) &&
+					workplace.equals(work.getWorkplace()))
 				return true;
 		}
 		return false;
@@ -148,6 +153,9 @@ public class Panel_WorkExperience extends Panel_Objects
 			{
 				CV_WorkExperience work = (CV_WorkExperience) object;
 
+				setFrom(work.getFrom());
+				setTo(work.getTo());
+
 				((JTextField) singleComponents.get(0)).setText(work.getOccupation());
 				((JTextField) singleComponents.get(1)).setText(work.getWorkplace());
 
@@ -160,9 +168,30 @@ public class Panel_WorkExperience extends Panel_Objects
 			@Override
 			public void hideObject(Object object, JButton objectButton)
 			{
-				// Collect new information
-				((CV_WorkExperience) object).setOccupation(((JTextField) singleComponents.get(0)).getText());
-				((CV_WorkExperience) object).setWorkplace(((JTextField) singleComponents.get(1)).getText());
+				// Collect new information:
+				// - from date
+				if(from.getDate() != null)
+				{
+					((CV_WorkExperience) object).setFrom(new Date(from.getDate().getYear(),
+							from.getDate().getMonthValue(),from.getDate().getDayOfMonth()));
+				}
+				// - to date
+				if(to.getDate() != null)
+				{
+					((CV_WorkExperience) object).setTo(new Date(to.getDate().getYear(),
+							to.getDate().getMonthValue(),to.getDate().getDayOfMonth()));
+				}
+				// - occupation
+				if(!((JTextField) singleComponents.get(0)).getText().equals(""))
+				{
+					((CV_WorkExperience) object).setOccupation(((JTextField) singleComponents.get(0)).getText());
+				}
+				// - workplace
+				if(!((JTextField) singleComponents.get(1)).getText().equals(""))
+				{
+					((CV_WorkExperience) object).setWorkplace(((JTextField) singleComponents.get(1)).getText());
+				}
+				// - duties
 				((CV_WorkExperience) object).setDuties(((Panel_Duties) dutiesPanel).collectInformation());
 
 				objectButton.setText(((CV_WorkExperience) object).toString());
@@ -194,7 +223,12 @@ public class Panel_WorkExperience extends Panel_Objects
 	public void showDuties(Object object)
 	{
 		CV_WorkExperience work = (CV_WorkExperience) object;
-		((Panel_Duties) dutiesPanel).insertInformation(work.getDuties());
+
+		ArrayList<String> list = new ArrayList<String>(work.getDuties());
+		Collections.copy(list, work.getDuties());// <-- ALWAYS COPY - NEVER use the array of interest
+		                                         //     directly, because it changes it's content
+
+		((Panel_Duties) dutiesPanel).insertInformation(list);
 	}
 }
 

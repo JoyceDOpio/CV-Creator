@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -51,8 +52,19 @@ public abstract class Panel_SavedStrings extends Panel_Data
             {
                 ((JButtonStyle) objectButton).click();
 
+                // If the user clicked on the object button
                 if(((JButtonStyle) objectButton).getClicked())
+                {
+                    // Turn "off" all other object buttons - in case the user has
+                    // already clicked on a different object button
+                    for(HashMap.Entry<JButton, JButton> entry : stringFields.entrySet())
+                    {
+                        if(!entry.getKey().equals(objectButton))
+                            ((JButtonStyle) entry.getKey()).setClicked(false);
+                    }
                     displayObject(objectButton);
+                }
+                // If the user clicked on the object button again
                 else
                     hideObject(objectButton);
             }

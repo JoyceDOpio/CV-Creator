@@ -1,14 +1,13 @@
-
-import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
 import javax.swing.*;
 
-public class Panel_Education extends Panel_Objects
+public class Panel_Education extends Panel_ObjectArrayList
 {
+	String emptyMessage, sameMessage;
+
 	Panel_Education()
 	{
 		// Panel borders
@@ -18,10 +17,14 @@ public class Panel_Education extends Panel_Objects
 
 		objectList = new ArrayList<>();
 
+		emptyMessage = "Wypełnij pola dla \"Wykształcenie\"";
+		sameMessage = "Wpis o takich samych danych już istnieje.";
 		setAddButtonText("Dodaj wykształcenie");
 
 		// Place in the sub-panel the GUI elements for entering data
 		placeElementsInPanel((Panel_EnterData) enterDataPanel);
+
+		setFrom(new Date(1999,5,3));
 	}
 
 	// A:
@@ -36,8 +39,8 @@ public class Panel_Education extends Panel_Objects
 			if(!doesObjectExist())
 			{
 				final CV_Education edu = new CV_Education(
-						new Date(from.getModel().getYear(),from.getModel().getMonth(),from.getModel().getDay()),
-						new Date(to.getModel().getYear(),to.getModel().getMonth(),to.getModel().getDay()),
+						new Date(from.getDate().getYear(),from.getDate().getMonthValue(),from.getDate().getDayOfMonth()),
+						new Date(to.getDate().getYear(),to.getDate().getMonthValue(),to.getDate().getDayOfMonth()),
 						// School name
 						((JTextField) singleComponents.get(0)).getText(),
 						// Course
@@ -53,11 +56,11 @@ public class Panel_Education extends Panel_Objects
 				clearEnterDataPanel();
 			}
 			else
-				JOptionPane.showMessageDialog(null, "Wpis o takich samych danych już istnieje.");
+				JOptionPane.showMessageDialog(null, sameMessage);
 		}
 		else
 		{
-			JOptionPane.showMessageDialog(null, "Wypełnij pola dla \"Wykształcenie\"");
+			JOptionPane.showMessageDialog(null, emptyMessage);
 		}
 	}
 
@@ -76,8 +79,11 @@ public class Panel_Education extends Panel_Objects
 	// Check whether a similar object already exists
 	public boolean doesObjectExist()
 	{
-		String fromDate = from.getJFormattedTextField().getText().replace('-','.');
-		String toDate = from.getJFormattedTextField().getText().replace('-','.');
+		Date fromDate = new Date(from.getDate().getYear(),
+				from.getDate().getMonthValue(),from.getDate().getDayOfMonth());
+		Date toDate = new Date(to.getDate().getYear(),
+				to.getDate().getMonthValue(),to.getDate().getDayOfMonth());
+		
 		String school = ((JTextField) singleComponents.get(0)).getText();
 		String course = ((JTextField) singleComponents.get(1)).getText();
 		String specialisation = ((JTextField) singleComponents.get(2)).getText();
@@ -86,8 +92,11 @@ public class Panel_Education extends Panel_Objects
 		{
 			CV_Education edu = (CV_Education) object;
 
-			if(edu.getFrom().equals(fromDate) && edu.getTo().equals(toDate) &&
-					school.equals(edu.getSchool()) && course.equals(edu.getCourse()) &&
+			// Compare object fields
+			if(edu.getFrom().areDatesTheSame(fromDate) &&
+					edu.getTo().areDatesTheSame(toDate)&&
+					school.equals(edu.getSchool()) &&
+					course.equals(edu.getCourse()) &&
 					specialisation.equals(edu.getSpecialisation()))
 				return true;
 		}
@@ -129,6 +138,9 @@ public class Panel_Education extends Panel_Objects
 			{
 				CV_Education edu = (CV_Education) object;
 
+				setFrom(edu.getFrom());
+				setTo(edu.getTo());
+
 				((JTextField) singleComponents.get(0)).setText(edu.getSchool());
 				((JTextField) singleComponents.get(1)).setText(edu.getCourse());
 				((JTextField) singleComponents.get(2)).setText(edu.getSpecialisation());
@@ -137,9 +149,29 @@ public class Panel_Education extends Panel_Objects
 			@Override
 			public void hideObject(Object object, JButton objectButton)
 			{
-				((CV_Education) object).setSchool(((JTextField) singleComponents.get(0)).getText());
-				((CV_Education) object).setCourse(((JTextField) singleComponents.get(1)).getText());
-				((CV_Education) object).setSpecialisation(((JTextField) singleComponents.get(2)).getText());
+				// Collect new information
+				if(from.getDate() != null)
+				{
+					((CV_Education) object).setFrom(new Date(from.getDate().getYear(),
+							from.getDate().getMonthValue(),from.getDate().getDayOfMonth()));
+				}
+				if(to.getDate() != null)
+				{
+					((CV_Education) object).setTo(new Date(to.getDate().getYear(),
+							to.getDate().getMonthValue(),to.getDate().getDayOfMonth()));
+				}
+				if(!((JTextField) singleComponents.get(0)).getText().equals(""))
+				{
+					((CV_Education) object).setSchool(((JTextField) singleComponents.get(0)).getText());
+				}
+				if(!((JTextField) singleComponents.get(1)).getText().equals(""))
+				{
+					((CV_Education) object).setCourse(((JTextField) singleComponents.get(1)).getText());
+				}
+				if(!((JTextField) singleComponents.get(2)).getText().equals(""))
+				{
+					((CV_Education) object).setSpecialisation(((JTextField) singleComponents.get(2)).getText());
+				}
 
 				objectButton.setText(((CV_Education) object).toString());
 

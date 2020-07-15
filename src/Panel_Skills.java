@@ -1,14 +1,11 @@
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.swing.*;
 
-public class Panel_Skills extends Panel_Strings
+public class Panel_Skills extends Panel_StringHashMap
 {
 	String sameMessage;
 
@@ -24,8 +21,9 @@ public class Panel_Skills extends Panel_Strings
 
 		sameMessage = "Taka umiejętność już istnieje.";
 
+		setEmptyMessage("Wypełnij pola dla \"Umiejętności\".");
+		setSameMessage("Taka umiejętność została już zapisana.");
 		setAddButtonText("Dodaj umiejętność");
-		setMessage("Wypełnij pola dla \"Umiejętności\"");
 
 		// Place in the sub-panel the GUI elements for entering data
 		placeElementsInPanel((Panel_EnterData) enterDataPanel);

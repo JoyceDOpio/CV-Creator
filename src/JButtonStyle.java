@@ -1,17 +1,14 @@
 
-import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 
 public class JButtonStyle extends JButton
 {
 	private static final long serialVersionUID = 1L;
+	// A variable to know whether the user clicked on the button to view
+	// content or to hide it, or rather to see whether the button is "on'
+	// or "off"
 	private boolean clicked = false;
 
 	JButtonStyle(String text)
@@ -21,7 +18,12 @@ public class JButtonStyle extends JButton
 		setFont(new Font("Arial", Font.TRUETYPE_FONT,14));
 	}
 
+	// C:
+	public void click(){clicked = !clicked;}
+
+	// G:
 	public boolean getClicked(){return clicked;}
 
-	public void click(){clicked = !clicked;}
+	// S:
+	public void setClicked(boolean click){clicked = click;}
 }

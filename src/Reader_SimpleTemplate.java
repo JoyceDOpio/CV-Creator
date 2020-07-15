@@ -64,6 +64,7 @@ public class Reader_SimpleTemplate
                             cv.personalDetails.setLastName(names[2] + " " + names[3]);
                         }
                     }
+
                     i++;
                 }
 
@@ -106,9 +107,10 @@ public class Reader_SimpleTemplate
                 // Get profession summary
                 else {
                     StringBuilder sectionText = new StringBuilder();
-                    i++;
+//                    i++;
 
-                    while (!sectionHeaders.contains(lines[i]) && i < lines.length) {
+                    while (!sectionHeaders.contains(lines[i]) && i < lines.length)
+                    {
                         sectionText.append(lines[i]);
                         sectionText.append(" ");
                         i++;
@@ -140,29 +142,9 @@ public class Reader_SimpleTemplate
                             String from = lines[i].split(" - ")[0];
                             String to = lines[i].split(" - ")[1];
                             // - from
-                            if(from.split("\\.").length == 3)
-                            {
-                                work.setFrom(new Date(Integer.parseInt(from.split("\\.")[0]),
-                                        Integer.parseInt(from.split("\\.")[1]),
-                                        Integer.parseInt(from.split("\\.")[2])));
-                            }
-                            else if(from.split("\\.").length == 2)
-                            {
-                                work.setFrom(new Date(Integer.parseInt(from.split("\\.")[0]),
-                                        Integer.parseInt(from.split("\\.")[1])));
-                            }
+                            work.setFrom(Date.createDateBasedOnString(from));
                             // - to
-                            if(to.split("\\.").length == 3)
-                            {
-                                work.setTo(new Date(Integer.parseInt(to.split("\\.")[0]),
-                                        Integer.parseInt(to.split("\\.")[1]),
-                                        Integer.parseInt(to.split("\\.")[2])));
-                            }
-                            else if(to.split("\\.").length == 2)
-                            {
-                                work.setTo(new Date(Integer.parseInt(to.split("\\.")[0]),
-                                        Integer.parseInt(to.split("\\.")[1])));
-                            }
+                            work.setTo(Date.createDateBasedOnString(to));
 
                             // Get occupation
                             i++;
@@ -209,29 +191,9 @@ public class Reader_SimpleTemplate
                             String from = lines[i].split(" - ")[0];
                             String to = lines[i].split(" - ")[1];
                             // - from
-                            if(from.split("\\.").length == 3)
-                            {
-                                edu.setFrom(new Date(Integer.parseInt(from.split("\\.")[0]),
-                                        Integer.parseInt(from.split("\\.")[1]),
-                                        Integer.parseInt(from.split("\\.")[2])));
-                            }
-                            else if(from.split("\\.").length == 2)
-                            {
-                                edu.setFrom(new Date(Integer.parseInt(from.split("\\.")[0]),
-                                        Integer.parseInt(from.split("\\.")[1])));
-                            }
+                            edu.setFrom(Date.createDateBasedOnString(from));
                             // - to
-                            if(to.split("\\.").length == 3)
-                            {
-                                edu.setTo(new Date(Integer.parseInt(to.split("\\.")[0]),
-                                        Integer.parseInt(to.split("\\.")[1]),
-                                        Integer.parseInt(to.split("\\.")[2])));
-                            }
-                            else if(to.split("\\.").length == 2)
-                            {
-                                edu.setTo(new Date(Integer.parseInt(to.split("\\.")[0]),
-                                        Integer.parseInt(to.split("\\.")[1])));
-                            }
+                            edu.setTo(Date.createDateBasedOnString(to));
 
                             // Get school name
                             i++;

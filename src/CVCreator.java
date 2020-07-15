@@ -17,13 +17,14 @@ public class CVCreator extends JFrame
 	SimpleTemplate document;
 	Panel_CVData enterDataPanel;
 
-	// Using this process to invoke the contructor,
 	// JFileChooser points to user's default directory
 	JFileChooser fileChooser;
 
 	JMenuBar menuBar;
 	JMenu menu;
 	JMenuItem menuItem1, menuItem2, menuItem3;
+
+	String menuItemText1, menuItemText2, menuItemText3, changeMessage;
 
     PdfReader reader;
 
@@ -45,7 +46,8 @@ public class CVCreator extends JFrame
             e.printStackTrace();
         }
 
-		setLayout(new BorderLayout());
+		// Set frame layout
+        setLayout(new BorderLayout());
 
 		fileChooser = new JFileChooser();
 
@@ -59,9 +61,12 @@ public class CVCreator extends JFrame
         // Create a menu 
         menu = new JMenu("Plik");
         // Create menu items
-        menuItem1 = new JMenuItem("Nowy...");
-        menuItem2 = new JMenuItem("Otwórz...");
-        menuItem3 = new JMenuItem("Zapisz...");
+        menuItemText1 = "Nowy...";
+        menuItemText2 = "Otwórz...";
+        menuItemText3 = "Zapisz...";
+        menuItem1 = new JMenuItem(menuItemText1);
+        menuItem2 = new JMenuItem(menuItemText2);
+        menuItem3 = new JMenuItem(menuItemText3);
         // Add icons to the menu items
         ImageIcon image = new ImageIcon(new ImageIcon("Images/new_file_icon.png")
                 .getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
@@ -72,6 +77,8 @@ public class CVCreator extends JFrame
         image = new ImageIcon(new ImageIcon("Images/save_file_icon.png")
                 .getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
         menuItem3.setIcon(image);
+
+        changeMessage = "Zapisać zmiany?";
 
         // Add action listeners to the menu items:
         // - New file menu item
@@ -84,8 +91,7 @@ public class CVCreator extends JFrame
 
                 if(!enterDataPanel.arePanelsEmpty())
                 {
-                    String message = "Zapisać zmiany?";
-                    int userChoice = JOptionPane.showConfirmDialog(null, message);
+                    int userChoice = JOptionPane.showConfirmDialog(null, changeMessage);
 
                     // If user chooses yes
                     if(userChoice == 0)
@@ -146,12 +152,14 @@ public class CVCreator extends JFrame
                         // Remove last new line
                         text.delete(text.length()-1,text.length());
 
+                        // Create a CV object based on the information
+                        // in the PDF file
                         cv = Reader_SimpleTemplate.convertToCV(text);
 
                         // Clear panels
                         enterDataPanel.clearPanels();
 
-                        // Insert the cv information into panel text fields
+                        // Insert the CV information into panel text fields
                         enterDataPanel.insertInformation(cv);
                     }
                     catch(IOException ex)
@@ -244,6 +252,7 @@ public class CVCreator extends JFrame
         }
     }
 
+    // -------------------------------------------------------------
 	public static void main(String[] args)
 	{
 		new CVCreator();
